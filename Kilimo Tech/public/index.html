@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,6 +31,7 @@
         .btn-login:hover, .btn-register:hover { background: #1b5e20; transform: scale(1.02); }
         .demo-info { background: #f5f5f5; border-radius: 20px; padding: 15px; margin-top: 20px; font-size: 12px; text-align: center; color: #666; }
         .error-msg { background: #ffebee; color: #c62828; padding: 10px; border-radius: 20px; font-size: 12px; margin-bottom: 15px; display: none; }
+        .success-msg { background: #e8f5e9; color: #2e7d32; padding: 10px; border-radius: 20px; font-size: 12px; margin-bottom: 15px; display: none; }
         @media (max-width: 480px) { .login-card { border-radius: 32px; } .login-header { padding: 30px 20px; } .form-container { padding: 20px; } }
     </style>
 </head>
@@ -38,7 +40,7 @@
         <div class="login-header">
             <i class="fas fa-seedling"></i>
             <h1>Kilimo Tech</h1>
-            <p>Connect with farmers & buyers</p>
+            <p>Connect with farmers and buyers</p>
         </div>
         <div class="tabs">
             <button class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
@@ -47,6 +49,7 @@
         <div class="form-container">
             <div id="loginError" class="error-msg"></div>
             <div id="registerError" class="error-msg"></div>
+            <div id="registerSuccess" class="success-msg"></div>
             
             <!-- Login Form -->
             <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
@@ -57,7 +60,7 @@
                 <div class="input-group">
                     <label><i class="fas fa-lock"></i> Password</label>
                     <div class="password-wrapper">
-                        <input type="password" id="loginPassword" placeholder="••••••" required>
+                        <input type="password" id="loginPassword" placeholder="Password" required>
                         <i class="fas fa-eye toggle-password" onclick="togglePassword('loginPassword')"></i>
                     </div>
                 </div>
@@ -87,7 +90,7 @@
                 <div class="input-group">
                     <label><i class="fas fa-lock"></i> Password (min 6 chars)</label>
                     <div class="password-wrapper">
-                        <input type="password" id="regPassword" placeholder="••••••" required>
+                        <input type="password" id="regPassword" placeholder="Password" required>
                         <i class="fas fa-eye toggle-password" onclick="togglePassword('regPassword')"></i>
                     </div>
                 </div>
@@ -104,22 +107,25 @@
     </div>
 
     <script>
-        // Database initialization
-        if (!localStorage.getItem('kilimo_users')) {
-            localStorage.setItem('kilimo_users', JSON.stringify([
-                { id: 1, username: 'Admin User', email: 'admin@kilimo.com', phone: '254711111111', password: 'admin123', role: 'admin', is_active: true, created_at: new Date().toISOString() },
-                { id: 2, username: 'John Buyer', email: 'buyer@example.com', phone: '254722222222', password: 'buyer123', role: 'buyer', is_active: true, created_at: new Date().toISOString() },
-                { id: 3, username: 'Mary Seller', email: 'seller@example.com', phone: '254733333333', password: 'seller123', role: 'seller', is_active: true, created_at: new Date().toISOString() }
-            ]));
+        const API_BASE = 'http://localhost:3000/api';
+
+        function showError(elementId, message) {
+            const errorDiv = document.getElementById(elementId);
+            errorDiv.innerText = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 3000);
         }
-        if (!localStorage.getItem('kilimo_products')) {
-            localStorage.setItem('kilimo_products', JSON.stringify([
-                { id: 101, seller_id: 3, title: 'Fresh Organic Tomatoes', description: 'Farm fresh organic tomatoes', category: 'food', price: 150, location: 'Kiambu', images: '[]', status: 'active', views: 45, created_at: new Date().toISOString() },
-                { id: 102, seller_id: 3, title: 'Maize Farming Tools', description: 'Complete farming tools set', category: 'farming', price: 2500, location: 'Nakuru', images: '[]', status: 'active', views: 32, created_at: new Date().toISOString() }
-            ]));
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('registerSuccess');
+            successDiv.innerText = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
         }
-        if (!localStorage.getItem('kilimo_payments')) localStorage.setItem('kilimo_payments', '[]');
-        if (!localStorage.getItem('kilimo_unlocks')) localStorage.setItem('kilimo_unlocks', '[]');
 
         function switchAuthTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -127,9 +133,16 @@
             if (tab === 'login') {
                 document.querySelector('.tab-btn:first-child').classList.add('active');
                 document.getElementById('loginForm').classList.add('active');
+                // Clear errors when switching
+                document.getElementById('loginError').style.display = 'none';
+                document.getElementById('registerError').style.display = 'none';
+                document.getElementById('registerSuccess').style.display = 'none';
             } else {
                 document.querySelector('.tab-btn:last-child').classList.add('active');
                 document.getElementById('registerForm').classList.add('active');
+                document.getElementById('loginError').style.display = 'none';
+                document.getElementById('registerError').style.display = 'none';
+                document.getElementById('registerSuccess').style.display = 'none';
             }
         }
 
@@ -147,25 +160,40 @@
             }
         }
 
-        function handleLogin(e) {
+        async function handleLogin(e) {
             e.preventDefault();
             const identifier = document.getElementById('loginIdentifier').value.trim();
             const password = document.getElementById('loginPassword').value;
-            const users = JSON.parse(localStorage.getItem('kilimo_users'));
-            const user = users.find(u => (u.email === identifier || u.phone === identifier) && u.password === password && u.is_active);
             
-            if (user) {
-                localStorage.setItem('kilimo_current_user', JSON.stringify(user));
-                window.location.replace(`${user.role}.html`);
-            } else {
-                const errorDiv = document.getElementById('loginError');
-                errorDiv.innerText = 'Invalid email/phone or password';
-                errorDiv.style.display = 'block';
-                setTimeout(() => errorDiv.style.display = 'none', 3000);
+            if (!identifier || !password) {
+                showError('loginError', 'Please enter email/phone and password');
+                return;
+            }
+            
+            try {
+                const response = await fetch(API_BASE + '/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier: identifier, password: password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Store token for API authentication
+                    localStorage.setItem('kilimo_token', result.token);
+                    // Redirect to user's dashboard
+                    window.location.replace(result.user.role + '.html');
+                } else {
+                    showError('loginError', result.error || 'Invalid email/phone or password');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('loginError', 'Connection error. Make sure the server is running on port 3000');
             }
         }
 
-        function handleRegister(e) {
+        async function handleRegister(e) {
             e.preventDefault();
             const username = document.getElementById('regUsername').value.trim();
             const email = document.getElementById('regEmail').value.trim();
@@ -173,39 +201,77 @@
             const password = document.getElementById('regPassword').value;
             const role = document.getElementById('regRole').value;
             
+            // Validation
+            if (!username || !email || !phone || !password || !role) {
+                showError('registerError', 'Please fill in all fields');
+                return;
+            }
+            
             if (!/^254[0-9]{9}$/.test(phone)) {
-                document.getElementById('registerError').innerText = 'Phone must be 254XXXXXXXXX format';
-                document.getElementById('registerError').style.display = 'block';
-                setTimeout(() => document.getElementById('registerError').style.display = 'none', 3000);
+                showError('registerError', 'Phone must be 254XXXXXXXXX format');
                 return;
             }
+            
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showError('registerError', 'Please enter a valid email address');
+                return;
+            }
+            
             if (password.length < 6) {
-                document.getElementById('registerError').innerText = 'Password must be at least 6 characters';
-                document.getElementById('registerError').style.display = 'block';
-                setTimeout(() => document.getElementById('registerError').style.display = 'none', 3000);
+                showError('registerError', 'Password must be at least 6 characters');
                 return;
             }
             
-            const users = JSON.parse(localStorage.getItem('kilimo_users'));
-            if (users.find(u => u.email === email || u.phone === phone)) {
-                document.getElementById('registerError').innerText = 'User already exists with this email or phone';
-                document.getElementById('registerError').style.display = 'block';
-                setTimeout(() => document.getElementById('registerError').style.display = 'none', 3000);
-                return;
+            try {
+                const response = await fetch(API_BASE + '/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        username: username, 
+                        email: email, 
+                        phone: phone, 
+                        password: password, 
+                        role: role 
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess('Registration successful! Please login.');
+                    // Clear form
+                    document.getElementById('registerForm').reset();
+                    // Switch to login tab after 2 seconds
+                    setTimeout(() => {
+                        switchAuthTab('login');
+                    }, 2000);
+                } else {
+                    showError('registerError', result.error || 'Registration failed');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showError('registerError', 'Connection error. Make sure the server is running on port 3000');
             }
-            
-            const newUser = { id: Date.now(), username, email, phone, password, role, is_active: true, created_at: new Date().toISOString() };
-            users.push(newUser);
-            localStorage.setItem('kilimo_users', JSON.stringify(users));
-            localStorage.setItem('kilimo_current_user', JSON.stringify(newUser));
-            window.location.replace(`${role}.html`);
         }
 
         // Check if already logged in
-        const currentUser = localStorage.getItem('kilimo_current_user');
-        if (currentUser && currentUser !== 'null') {
-            const user = JSON.parse(currentUser);
-            window.location.replace(`${user.role}.html`);
+        const token = localStorage.getItem('kilimo_token');
+        if (token) {
+            // Verify token with server
+            fetch(API_BASE + '/verify', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid && data.user) {
+                    window.location.replace(data.user.role + '.html');
+                } else {
+                    localStorage.removeItem('kilimo_token');
+                }
+            })
+            .catch(() => {
+                localStorage.removeItem('kilimo_token');
+            });
         }
     </script>
 </body>

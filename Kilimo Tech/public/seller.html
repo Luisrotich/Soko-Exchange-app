@@ -16,22 +16,19 @@
         .logo h1 { font-size: 1.3rem; color: #1b4d1b; }
         .seller-badge { background: #eaf7ea; padding: 5px 12px; border-radius: 40px; font-size: 0.75rem; color: #2c6e2c; }
         .seller-name { font-weight: 600; background: #f5f5f5; padding: 5px 12px; border-radius: 40px; font-size: 0.85rem; }
-        .btn-logout { background: #dc2626; border: none; color: white; padding: 6px 14px; border-radius: 30px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
-        .btn-logout:hover { background: #b91c1c; }
+        .btn-logout { background: #dc2626; border: none; color: white; padding: 6px 14px; border-radius: 30px; cursor: pointer; font-size: 0.8rem; }
         .welcome-banner { background: linear-gradient(135deg, #1f4f1f, #2e7d32); border-radius: 24px; padding: 16px 20px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .welcome-banner h2 { font-size: 1.2rem; margin-bottom: 4px; }
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
-        .stat-card { background: white; border-radius: 20px; padding: 14px 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.2s; }
-        .stat-card:hover { transform: translateY(-2px); }
+        .stat-card { background: white; border-radius: 20px; padding: 14px 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .stat-icon i { font-size: 1.6rem; color: #2c6e2c; }
         .stat-value { font-size: 1.4rem; font-weight: 800; }
         .stat-label { font-size: 0.7rem; color: #5a6e5a; }
         @media (min-width: 640px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
-        .btn-primary { background: #2c6e2c; color: white; border: none; padding: 8px 18px; border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-        .btn-primary:hover { background: #1b5e20; }
+        .btn-primary { background: #2c6e2c; color: white; border: none; padding: 8px 18px; border-radius: 40px; cursor: pointer; font-weight: 600; }
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 16px; }
-        .product-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.2s; }
+        .product-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
         .product-image { width: 100%; height: 180px; object-fit: cover; }
         .product-info { padding: 12px; }
@@ -39,14 +36,13 @@
         .product-price { color: #2c6e2c; font-weight: 700; margin: 4px 0; }
         .product-location { font-size: 12px; color: #666; display: flex; align-items: center; gap: 4px; margin: 5px 0; }
         .product-actions { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-edit, .btn-delete { padding: 5px 12px; border-radius: 20px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; transition: 0.2s; }
+        .btn-edit, .btn-delete { padding: 5px 12px; border-radius: 20px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; }
         .btn-edit { background: #e0e8e0; color: #2c6e2c; }
         .btn-delete { background: #ffe0e0; color: #dc2626; }
         .empty-state { text-align: center; padding: 40px; color: #6e8b6e; }
         .image-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
         .preview-img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
         
-        /* Bottom Navigation */
         .mobile-bottom-nav {
             position: fixed;
             bottom: 0;
@@ -74,71 +70,41 @@
             flex: 1;
             max-width: 80px;
         }
-        .nav-item i { font-size: 1.4rem; color: #9aa89a; transition: all 0.3s ease; }
-        .nav-item span { font-size: 0.7rem; font-weight: 500; color: #9aa89a; transition: all 0.3s ease; }
-        .nav-item:hover { background: #f0f7f0; transform: translateY(-3px); }
+        .nav-item i { font-size: 1.4rem; color: #9aa89a; }
+        .nav-item span { font-size: 0.7rem; font-weight: 500; color: #9aa89a; }
         .nav-item.active { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
         .nav-item.active i { color: #2e7d32; transform: scale(1.1); }
         .nav-item.active span { color: #2e7d32; font-weight: 700; }
         
-        /* Modal Styles */
-        .modal, .toast-modal, .popup-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        .modal-content, .toast-content, .popup-content {
-            background: white;
-            border-radius: 32px;
-            max-width: 450px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            padding: 24px;
-            animation: slideUp 0.3s ease;
-            text-align: center;
-        }
-        .toast-content { max-width: 350px; text-align: center; background: #1e3a1e; color: white; }
-        .popup-content { max-width: 400px; }
-        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; border-radius: 32px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; padding: 24px; }
         .form-group { margin-bottom: 16px; text-align: left; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.85rem; color: #1e3a1e; }
         input, select, textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #e2ede2; border-radius: 24px; font-family: inherit; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: #2c6e2c; }
-        
         .search-filter-group { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
         .search-filter-group input { flex: 1; }
         .search-filter-group select { width: auto; min-width: 100px; }
-        
         .btn-success { background: #2c6e2c; color: white; border: none; padding: 12px 24px; border-radius: 40px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px; }
         .btn-cancel { background: #f0f0f0; color: #333; border: none; padding: 12px 24px; border-radius: 40px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 8px; }
         .icon-large { font-size: 4rem; margin-bottom: 15px; }
-        .text-success { color: #2e7d32; }
-        .text-error { color: #dc2626; }
         .text-warning { color: #f59e0b; }
-        
-        .account-detail { text-align: left; background: #f8faf8; border-radius: 20px; padding: 15px; margin: 15px 0; }
-        .account-detail p { margin: 8px 0; display: flex; gap: 10px; }
-        .account-detail strong { width: 80px; color: #1e3a1e; }
-        
-        .resource-item { text-align: left; padding: 12px; border-bottom: 1px solid #e8ece8; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; border-radius: 16px; }
-        .resource-item:hover { background: #f0f7f0; }
-        .resource-item i { width: 35px; font-size: 1.3rem; color: #2c6e2c; }
-        .resource-item h4 { font-size: 0.9rem; margin-bottom: 3px; }
-        .resource-item p { font-size: 0.7rem; color: #666; }
-        
-        .delete-warning { color: #dc2626; font-size: 0.9rem; margin: 15px 0; }
+        .toast-notification {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e3a1e;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            z-index: 1100;
+            animation: fadeInUp 0.3s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -155,12 +121,12 @@
             <div class="seller-info">
                 <span class="seller-badge"><i class="fas fa-store"></i> Seller</span>
                 <span id="sellerName" class="seller-name">Loading...</span>
-                <button class="btn-logout" onclick="showLogoutConfirm()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
             </div>
         </div>
 
         <div class="welcome-banner">
-            <div><h2>Welcome, <span id="welcomeName">Seller</span>! 👋</h2><p>Manage your products and grow your business</p></div>
+            <div><h2>Welcome, <span id="welcomeName">Seller</span>!</h2><p>Manage your products and grow your business</p></div>
             <div><i class="fas fa-chart-line" style="font-size: 2rem; opacity: 0.8;"></i></div>
         </div>
 
@@ -177,36 +143,28 @@
         </div>
 
         <div class="search-filter-group">
-            <input type="text" id="searchInput" placeholder="🔍 Search products..." onkeyup="searchProducts()">
+            <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()">
             <select id="statusFilter" onchange="filterProducts()">
-                <option value="all">📋 All</option>
-                <option value="active">✅ Active</option>
-                <option value="sold">💰 Sold</option>
+                <option value="all">All</option>
+                <option value="active">Active</option>
+                <option value="sold">Sold</option>
             </select>
         </div>
 
         <div id="productsGrid" class="products-grid"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
     </div>
 
-    <!-- Toast Notification Modal -->
-    <div id="toastModal" class="toast-modal">
-        <div class="toast-content">
-            <i class="fas fa-check-circle" style="font-size: 3rem; margin-bottom: 10px;"></i>
-            <p id="toastMessage" style="font-size: 1rem;">Success!</p>
-        </div>
-    </div>
-
     <!-- Add Product Modal -->
     <div id="addModal" class="modal">
         <div class="modal-content">
-            <h2 style="margin-bottom: 20px;"><i class="fas fa-plus-circle"></i> Add New Product</h2>
+            <h2 style="margin-bottom: 20px;">Add New Product</h2>
             <form id="addForm" onsubmit="submitAddProduct(event)">
-                <div class="form-group"><label><i class="fas fa-tag"></i> Title *</label><input type="text" id="prodTitle" placeholder="e.g., Fresh Organic Tomatoes" required></div>
-                <div class="form-group"><label><i class="fas fa-category"></i> Category *</label><select id="prodCategory" required><option value="">Select</option><option value="food">🍎 Food</option><option value="farming">🚜 Farming</option><option value="electronics">📱 Electronics</option><option value="animals">🐄 Animals</option></select></div>
-                <div class="form-group"><label><i class="fas fa-money-bill"></i> Price (KSH) *</label><input type="number" id="prodPrice" placeholder="e.g., 1500" required></div>
-                <div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Location *</label><input type="text" id="prodLocation" placeholder="e.g., Nairobi" required></div>
-                <div class="form-group"><label><i class="fas fa-align-left"></i> Description *</label><textarea id="prodDescription" rows="3" placeholder="Describe your product..." required></textarea></div>
-                <div class="form-group"><label><i class="fas fa-image"></i> Images (Max 4)</label><input type="file" id="prodImages" accept="image/*" multiple onchange="previewImages(this)"></div>
+                <div class="form-group"><label>Title *</label><input type="text" id="prodTitle" placeholder="Product title" required></div>
+                <div class="form-group"><label>Category *</label><select id="prodCategory" required><option value="">Select</option><option value="food">Food</option><option value="farming">Farming</option><option value="electronics">Electronics</option><option value="animals">Animals</option></select></div>
+                <div class="form-group"><label>Price (KSH) *</label><input type="number" id="prodPrice" placeholder="e.g., 1500" required></div>
+                <div class="form-group"><label>Location *</label><input type="text" id="prodLocation" placeholder="e.g., Nairobi" required></div>
+                <div class="form-group"><label>Description *</label><textarea id="prodDescription" rows="3" placeholder="Describe your product..." required></textarea></div>
+                <div class="form-group"><label>Images (Max 4)</label><input type="file" id="prodImages" accept="image/*" multiple onchange="previewImages(this)"></div>
                 <div id="imagePreview" class="image-preview"></div>
                 <button type="submit" class="btn-success">Post Product</button>
                 <button type="button" class="btn-cancel" onclick="closeAddModal()">Cancel</button>
@@ -217,7 +175,7 @@
     <!-- Edit Product Modal -->
     <div id="editModal" class="modal">
         <div class="modal-content">
-            <h2 style="margin-bottom: 20px;"><i class="fas fa-edit"></i> Edit Product</h2>
+            <h2 style="margin-bottom: 20px;">Edit Product</h2>
             <form id="editForm" onsubmit="submitEdit(event)">
                 <input type="hidden" id="editId">
                 <div class="form-group"><label>Title</label><input type="text" id="editTitle" required></div>
@@ -233,79 +191,27 @@
 
     <!-- Delete Confirm Modal -->
     <div id="deleteModal" class="modal">
-        <div class="popup-content">
+        <div class="modal-content" style="text-align:center;">
             <i class="fas fa-exclamation-triangle icon-large text-warning"></i>
             <h3>Delete Product?</h3>
-            <p class="delete-warning">⚠️ This action cannot be undone!</p>
+            <p>This action cannot be undone!</p>
             <button class="btn-success" onclick="confirmDelete()" style="background:#dc2626;">Yes, Delete</button>
             <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
         </div>
     </div>
 
-    <!-- Account Modal -->
-    <div id="accountModal" class="modal">
-        <div class="popup-content">
-            <i class="fas fa-user-circle icon-large text-success"></i>
-            <h3>Account Details</h3>
-            <div class="account-detail">
-                <p><strong>Name:</strong> <span id="accName"></span></p>
-                <p><strong>Email:</strong> <span id="accEmail"></span></p>
-                <p><strong>Role:</strong> Seller</p>
-                <p><strong>Products:</strong> <span id="accProducts"></span></p>
-            </div>
-            <button class="btn-cancel" onclick="closeAccountModal()">Close</button>
-        </div>
-    </div>
-
-    <!-- Resources Modal -->
-    <div id="resourcesModal" class="modal">
-        <div class="popup-content">
-            <i class="fas fa-book-open icon-large text-success"></i>
-            <h3>Farming Resources</h3>
-            <div style="margin: 20px 0;">
-                <div class="resource-item"><i class="fas fa-leaf"></i><div><h4>Farming Tips</h4><p>Rotate crops, use organic fertilizers</p></div></div>
-                <div class="resource-item"><i class="fas fa-chart-line"></i><div><h4>Market Prices</h4><p>Maize: 120/kg, Tomatoes: 150/kg</p></div></div>
-                <div class="resource-item"><i class="fas fa-cloud-sun"></i><div><h4>Weather Forecast</h4><p>Sunny with afternoon showers</p></div></div>
-                <div class="resource-item"><i class="fas fa-landmark"></i><div><h4>Government Programs</h4><p>Subsidized fertilizers available</p></div></div>
-                <div class="resource-item"><i class="fas fa-headset"></i><div><h4>Farmer Support</h4><p>24/7 expert assistance</p></div></div>
-            </div>
-            <button class="btn-cancel" onclick="closeResourcesModal()">Close</button>
-        </div>
-    </div>
-
-    <!-- Help Modal -->
-    <div id="helpModal" class="modal">
-        <div class="popup-content">
-            <i class="fas fa-question-circle icon-large text-success"></i>
-            <h3>Help Center</h3>
-            <div class="account-detail">
-                <p><strong>📧 Email:</strong> support@kilimotech.com</p>
-                <p><strong>📱 Phone:</strong> 0700 000 000</p>
-                <p><strong>💬 WhatsApp:</strong> 0700 000 000</p>
-                <p><strong>⏰ Hours:</strong> Mon-Fri, 8am-6pm</p>
-            </div>
-            <div class="account-detail">
-                <p><strong>❓ How to add product?</strong><br>Click "Add Product" button</p>
-                <p><strong>❓ How to edit?</strong><br>Click Edit button on any product</p>
-                <p><strong>❓ How to delete?</strong><br>Click Delete button</p>
-            </div>
-            <button class="btn-cancel" onclick="closeHelpModal()">Close</button>
-        </div>
-    </div>
-
-    <!-- Logout Confirm Modal -->
-    <div id="logoutModal" class="modal">
-        <div class="popup-content">
-            <i class="fas fa-sign-out-alt icon-large text-warning"></i>
-            <h3>Logout?</h3>
-            <p>Are you sure you want to logout?</p>
-            <button class="btn-success" onclick="confirmLogout()" style="background:#dc2626;">Yes, Logout</button>
-            <button class="btn-cancel" onclick="closeLogoutModal()">Cancel</button>
+    <!-- Toast Modal -->
+    <div id="toastModal" class="modal">
+        <div class="modal-content" style="max-width: 350px; text-align: center; background: #1e3a1e; color: white;">
+            <i class="fas fa-check-circle" style="font-size: 3rem; margin-bottom: 10px;"></i>
+            <p id="toastMessage" style="font-size: 1rem;">Success!</p>
         </div>
     </div>
 
     <script>
+        const API_BASE = 'http://localhost:3000/api';
         let currentUser = null;
+        let authToken = null;
         let products = [];
         let editId = null;
         let deleteId = null;
@@ -319,29 +225,57 @@
             if (isError) {
                 icon.className = 'fas fa-exclamation-circle';
                 icon.style.color = '#f59e0b';
-                toast.querySelector('.toast-content').style.background = '#dc2626';
+                toast.querySelector('.modal-content').style.background = '#dc2626';
             } else {
                 icon.className = 'fas fa-check-circle';
                 icon.style.color = '#4caf50';
-                toast.querySelector('.toast-content').style.background = '#1e3a1e';
+                toast.querySelector('.modal-content').style.background = '#1e3a1e';
             }
             toast.style.display = 'flex';
             setTimeout(() => { toast.style.display = 'none'; }, 2500);
         }
 
-        function loadData() {
-            const userStr = localStorage.getItem('kilimo_current_user');
-            if (!userStr || userStr === 'null') { window.location.replace('index.html'); return; }
-            currentUser = JSON.parse(userStr);
-            if (currentUser.role !== 'seller') { window.location.replace(`${currentUser.role}.html`); return; }
+        async function loadData() {
+            const token = localStorage.getItem('kilimo_token');
+            if (!token) { 
+                window.location.replace('index.html'); 
+                return; 
+            }
             
-            document.getElementById('sellerName').innerText = currentUser.username;
-            document.getElementById('welcomeName').innerText = currentUser.username.split(' ')[0];
-            
-            const allProducts = JSON.parse(localStorage.getItem('kilimo_products') || '[]');
-            products = allProducts.filter(p => p.seller_id === currentUser.id);
-            renderProducts();
-            updateStats();
+            try {
+                const response = await fetch(API_BASE + '/verify', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await response.json();
+                
+                if (data.valid && data.user.role === 'seller') {
+                    currentUser = data.user;
+                    authToken = token;
+                    document.getElementById('sellerName').innerText = currentUser.username;
+                    document.getElementById('welcomeName').innerText = currentUser.username.split(' ')[0];
+                    loadSellerProducts();
+                } else {
+                    localStorage.removeItem('kilimo_token');
+                    window.location.replace('index.html');
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                showToast('Connection error. Make sure server is running.', true);
+            }
+        }
+
+        async function loadSellerProducts() {
+            try {
+                const response = await fetch(API_BASE + '/my-products', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+                products = await response.json();
+                renderProducts();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showToast('Error loading products', true);
+            }
         }
 
         function updateStats() {
@@ -350,6 +284,14 @@
             document.getElementById('totalViews').innerText = totalViews;
             document.getElementById('totalEarnings').innerText = products.length * 20;
             document.getElementById('totalContacts').innerText = products.length;
+        }
+
+        function getImageUrl(imagePath) {
+            if (!imagePath) return 'https://placehold.co/300x200/2e7d32/white?text=No+Image';
+            if (imagePath.startsWith('http')) return imagePath;
+            if (imagePath.startsWith('/uploads/')) return 'http://localhost:3000' + imagePath;
+            if (imagePath.startsWith('data:image')) return imagePath;
+            return 'https://placehold.co/300x200/2e7d32/white?text=Product';
         }
 
         function renderProducts() {
@@ -368,9 +310,11 @@
             grid.innerHTML = filtered.map(p => {
                 let images = [];
                 try { images = JSON.parse(p.images || '[]'); } catch(e) {}
+                const mainImage = images.length > 0 ? getImageUrl(images[0]) : 'https://placehold.co/300x200/2e7d32/white?text=Product';
+                
                 return `
                     <div class="product-card">
-                        <img src="${images[0] || 'https://placehold.co/300x200/2e7d32/white?text=Product'}" class="product-image" onerror="this.src='https://placehold.co/300x200/2e7d32/white?text=Product'">
+                        <img src="${mainImage}" class="product-image" onerror="this.src='https://placehold.co/300x200/2e7d32/white?text=Product'">
                         <div class="product-info">
                             <div class="product-title">${escapeHtml(p.title)} ${p.status === 'sold' ? '<span style="background:#fef3c7; color:#b45309; font-size:0.7rem; padding:2px 8px; border-radius:12px; margin-left:6px;">SOLD</span>' : ''}</div>
                             <div class="product-price">KSH ${p.price.toLocaleString()}</div>
@@ -418,23 +362,36 @@
             if (!title || !category || !price || !location || !description) { showToast('Please fill all fields', true); return; }
             if (selectedFiles.length === 0) { showToast('Please upload at least 1 image', true); return; }
             
-            const imageData = [];
-            for (const file of selectedFiles) {
-                const data = await new Promise(r => { const reader = new FileReader(); reader.onload = () => r(reader.result); reader.readAsDataURL(file); });
-                imageData.push(data);
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('category', category);
+            formData.append('price', price);
+            formData.append('location', location);
+            formData.append('description', description);
+            for (let i = 0; i < selectedFiles.length; i++) {
+                formData.append('images', selectedFiles[i]);
             }
             
-            const allProducts = JSON.parse(localStorage.getItem('kilimo_products') || '[]');
-            const newProduct = { id: Date.now(), seller_id: currentUser.id, title, category, price, location, description, images: JSON.stringify(imageData), status: 'active', views: 0, created_at: new Date().toISOString() };
-            allProducts.push(newProduct);
-            localStorage.setItem('kilimo_products', JSON.stringify(allProducts));
-            
-            products.push(newProduct);
-            closeAddModal();
-            resetAddForm();
-            renderProducts();
-            updateStats();
-            showToast('✅ Product added successfully!');
+            try {
+                const response = await fetch(API_BASE + '/products', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + authToken },
+                    body: formData
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast('Product added successfully!');
+                    closeAddModal();
+                    resetAddForm();
+                    loadSellerProducts();
+                } else {
+                    showToast(result.error || 'Failed to add product', true);
+                }
+            } catch (error) {
+                console.error('Error adding product:', error);
+                showToast('Failed to add product', true);
+            }
         }
 
         function resetAddForm() {
@@ -456,40 +413,61 @@
             document.getElementById('editModal').style.display = 'flex';
         }
 
-        function submitEdit(e) {
+        async function submitEdit(e) {
             e.preventDefault();
-            const allProducts = JSON.parse(localStorage.getItem('kilimo_products') || '[]');
-            const index = allProducts.findIndex(p => p.id === editId);
-            if (index !== -1) {
-                allProducts[index].title = document.getElementById('editTitle').value;
-                allProducts[index].description = document.getElementById('editDescription').value;
-                allProducts[index].price = parseFloat(document.getElementById('editPrice').value);
-                allProducts[index].location = document.getElementById('editLocation').value;
-                allProducts[index].status = document.getElementById('editStatus').value;
-                localStorage.setItem('kilimo_products', JSON.stringify(allProducts));
+            const updates = {
+                title: document.getElementById('editTitle').value,
+                description: document.getElementById('editDescription').value,
+                price: parseFloat(document.getElementById('editPrice').value),
+                location: document.getElementById('editLocation').value,
+                status: document.getElementById('editStatus').value
+            };
+            
+            try {
+                const response = await fetch(API_BASE + '/products/' + editId, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + authToken
+                    },
+                    body: JSON.stringify(updates)
+                });
                 
-                const prodIndex = products.findIndex(p => p.id === editId);
-                if (prodIndex !== -1) products[prodIndex] = allProducts[index];
-                closeEditModal();
-                renderProducts();
-                updateStats();
-                showToast('✅ Product updated successfully!');
+                if (response.ok) {
+                    showToast('Product updated successfully!');
+                    closeEditModal();
+                    loadSellerProducts();
+                } else {
+                    showToast('Failed to update product', true);
+                }
+            } catch (error) {
+                console.error('Error updating product:', error);
+                showToast('Failed to update product', true);
             }
         }
 
         function openDeleteModal(id) { deleteId = id; document.getElementById('deleteModal').style.display = 'flex'; }
         function closeDeleteModal() { document.getElementById('deleteModal').style.display = 'none'; deleteId = null; }
         
-        function confirmDelete() {
+        async function confirmDelete() {
             if (deleteId) {
-                const allProducts = JSON.parse(localStorage.getItem('kilimo_products') || '[]');
-                const filtered = allProducts.filter(p => p.id !== deleteId);
-                localStorage.setItem('kilimo_products', JSON.stringify(filtered));
-                products = products.filter(p => p.id !== deleteId);
-                closeDeleteModal();
-                renderProducts();
-                updateStats();
-                showToast('✅ Product deleted successfully');
+                try {
+                    const response = await fetch(API_BASE + '/products/' + deleteId, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': 'Bearer ' + authToken }
+                    });
+                    
+                    if (response.ok) {
+                        showToast('Product deleted successfully');
+                        closeDeleteModal();
+                        loadSellerProducts();
+                    } else {
+                        showToast('Failed to delete product', true);
+                    }
+                } catch (error) {
+                    console.error('Error deleting product:', error);
+                    showToast('Failed to delete product', true);
+                }
                 deleteId = null;
             }
         }
@@ -498,34 +476,16 @@
         function closeAddModal() { document.getElementById('addModal').style.display = 'none'; resetAddForm(); }
         function closeEditModal() { document.getElementById('editModal').style.display = 'none'; editId = null; }
 
-        // Modal functions
-        function showAccountModal() {
-            document.getElementById('accName').innerText = currentUser.username;
-            document.getElementById('accEmail').innerText = currentUser.email;
-            document.getElementById('accProducts').innerText = products.length;
-            document.getElementById('accountModal').style.display = 'flex';
-        }
-        function closeAccountModal() { document.getElementById('accountModal').style.display = 'none'; }
-        
-        function showResourcesModal() { document.getElementById('resourcesModal').style.display = 'flex'; }
-        function closeResourcesModal() { document.getElementById('resourcesModal').style.display = 'none'; }
-        
-        function showHelpModal() { document.getElementById('helpModal').style.display = 'flex'; }
-        function closeHelpModal() { document.getElementById('helpModal').style.display = 'none'; }
-        
-        function showLogoutConfirm() { document.getElementById('logoutModal').style.display = 'flex'; }
-        function closeLogoutModal() { document.getElementById('logoutModal').style.display = 'none'; }
-        
-        function confirmLogout() { 
-            localStorage.removeItem('kilimo_current_user'); 
-            window.location.replace('index.html'); 
-        }
+        function showAccountModal() { alert('Account: ' + currentUser.username + '\nEmail: ' + currentUser.email); }
+        function showResourcesModal() { alert('Farming Tips\nMarket Prices\nWeather Forecast\nGovernment Programs'); }
+        function showHelpModal() { alert('Help: support@kilimotech.com\nPhone: 0700 000 000'); }
+        function showLogoutConfirm() { if (confirm('Logout?')) { localStorage.removeItem('kilimo_token'); window.location.replace('index.html'); } }
+        function logout() { showLogoutConfirm(); }
 
         function switchMobileTab(tab) {
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             const active = document.querySelector(`.nav-item[data-tab="${tab}"]`);
             if (active) active.classList.add('active');
-            
             if (tab === 'account') showAccountModal();
             else if (tab === 'resources') showResourcesModal();
             else if (tab === 'help') showHelpModal();

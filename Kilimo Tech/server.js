@@ -30,7 +30,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'kilimo_session_secret',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 } // 7 days
+  cookie: { secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 }
 }));
 
 // Configure multer for image uploads
@@ -50,7 +50,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
   storage: storage,
-  limits: { files: 4, fileSize: 5 * 1024 * 1024 }, // 5MB per file
+  limits: { files: 4, fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
     if (allowedTypes.includes(file.mimetype)) {
@@ -83,10 +83,85 @@ const authenticate = async (req, res, next) => {
 
 // Health check
 app.get('/api/message', (req, res) => {
-  res.json({ message: 'Kilimo Tech is live 🚀' });
+  res.json({ message: 'Kilimo Tech is live' });
 });
 
-// Get all products (limited info for non-paying users)
+// ==================== AUTHENTICATION ROUTES ====================
+
+// Register
+app.post('/api/register', async (req, res) => {
+  const { username, email, phone, password, role } = req.body;
+  
+  if (!username || !email || !phone || !password || !role) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+  
+  if (!['buyer', 'seller'].includes(role)) {
+    return res.status(400).json({ error: 'Invalid role' });
+  }
+  
+  const result = await registerUser({ username, email, phone, password, role });
+  
+  if (result.success) {
+    res.json({ success: true, token: result.token, userId: result.userId, role: role });
+  } else {
+    res.status(400).json({ error: result.error });
+  }
+});
+
+// Login
+app.post('/api/login', async (req, res) => {
+  const { identifier, password } = req.body;
+  
+  if (!identifier || !password) {
+    return res.status(400).json({ error: 'Identifier and password are required' });
+  }
+  
+  const result = await loginUser(identifier, password);
+  
+  if (result.success) {
+    res.json({ success: true, token: result.token, user: result.user });
+  } else {
+    res.status(401).json({ error: result.error });
+  }
+});
+
+// ==================== ADD THIS: Verify Token Endpoint ====================
+app.get('/api/verify', authenticate, async (req, res) => {
+  try {
+    const db = getDatabase();
+    const user = await db.get(
+      'SELECT id, username, email, phone, role, is_active, created_at FROM users WHERE id = ?',
+      [req.userId]
+    );
+    
+    if (!user) {
+      return res.status(401).json({ valid: false, error: 'User not found' });
+    }
+    
+    if (!user.is_active) {
+      return res.status(401).json({ valid: false, error: 'Account is deactivated' });
+    }
+    
+    res.json({ 
+      valid: true, 
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        phone: user.phone,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error('Verify error:', error);
+    res.status(500).json({ valid: false, error: 'Server error' });
+  }
+});
+
+// ==================== PRODUCT ROUTES ====================
+
+// Get all products
 app.get('/api/products', async (req, res) => {
   const db = getDatabase();
   const token = req.headers.authorization?.split(' ')[1];
@@ -108,16 +183,14 @@ app.get('/api/products', async (req, res) => {
     
     const products = await db.all(query);
     
-    // Filter sensitive info based on payment status
     const processedProducts = await Promise.all(products.map(async (product) => {
       if (userId) {
         const hasAccess = await hasAccessToSellerDetails(userId, product.id);
         if (hasAccess) {
-          return product; // Full access
+          return product;
         }
       }
       
-      // Limited access (no seller contact info)
       const { seller_phone, seller_email, ...limitedProduct } = product;
       return {
         ...limitedProduct,
@@ -159,14 +232,12 @@ app.get('/api/products/:id', async (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
     
-    // Check access
     let hasAccess = false;
     if (userId) {
       hasAccess = await hasAccessToSellerDetails(userId, productId);
     }
     
     if (!hasAccess) {
-      // Hide seller info
       product.seller_phone = 'hidden - pay 20 KSH to unlock';
       product.seller_email = 'hidden - pay 20 KSH to unlock';
       product.contact_locked = true;
@@ -190,12 +261,10 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
   const db = getDatabase();
   const { title, description, category, price, location } = req.body;
   
-  // Validate required fields
   if (!title || !description || !category || !price || !location) {
     return res.status(400).json({ error: 'All fields are required' });
   }
   
-  // Process images
   const imagePaths = req.files.map(file => `/uploads/${file.filename}`);
   const imagesJson = JSON.stringify(imagePaths);
   
@@ -217,6 +286,68 @@ app.post('/api/products', authenticate, upload.array('images', 4), async (req, r
   }
 });
 
+// ==================== ADD THIS: Update Product ====================
+app.put('/api/products/:id', authenticate, async (req, res) => {
+  if (req.userRole !== 'seller') {
+    return res.status(403).json({ error: 'Only sellers can update products' });
+  }
+  
+  const db = getDatabase();
+  const productId = req.params.id;
+  const { title, description, price, location, status } = req.body;
+  
+  try {
+    const product = await db.get(
+      'SELECT * FROM products WHERE id = ? AND seller_id = ?',
+      [productId, req.userId]
+    );
+    
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found or access denied' });
+    }
+    
+    await db.run(
+      `UPDATE products 
+       SET title = ?, description = ?, price = ?, location = ?, status = ?, updated_at = CURRENT_TIMESTAMP
+       WHERE id = ?`,
+      [title, description, price, location, status, productId]
+    );
+    
+    res.json({ success: true, message: 'Product updated successfully' });
+  } catch (error) {
+    console.error('Error updating product:', error);
+    res.status(500).json({ error: 'Failed to update product' });
+  }
+});
+
+// ==================== ADD THIS: Delete Product ====================
+app.delete('/api/products/:id', authenticate, async (req, res) => {
+  if (req.userRole !== 'seller') {
+    return res.status(403).json({ error: 'Only sellers can delete products' });
+  }
+  
+  const db = getDatabase();
+  const productId = req.params.id;
+  
+  try {
+    const product = await db.get(
+      'SELECT * FROM products WHERE id = ? AND seller_id = ?',
+      [productId, req.userId]
+    );
+    
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found or access denied' });
+    }
+    
+    await db.run('DELETE FROM products WHERE id = ?', [productId]);
+    
+    res.json({ success: true, message: 'Product deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ error: 'Failed to delete product' });
+  }
+});
+
 // Get user's products
 app.get('/api/my-products', authenticate, async (req, res) => {
   const db = getDatabase();
@@ -233,45 +364,8 @@ app.get('/api/my-products', authenticate, async (req, res) => {
   }
 });
 
-// Register
-app.post('/api/register', async (req, res) => {
-  const { username, email, phone, password, role } = req.body;
-  
-  if (!username || !email || !phone || !password || !role) {
-    return res.status(400).json({ error: 'All fields are required' });
-  }
-  
-  if (!['buyer', 'seller'].includes(role)) {
-    return res.status(400).json({ error: 'Invalid role' });
-  }
-  
-  const result = await registerUser({ username, email, phone, password, role });
-  
-  if (result.success) {
-    res.json({ success: true, token: result.token, userId: result.userId, role: role });
-  } else {
-    res.status(400).json({ error: result.error });
-  }
-});
+// ==================== PAYMENT ROUTES ====================
 
-// Login
-app.post('/api/login', async (req, res) => {
-  const { identifier, password } = req.body;
-  
-  if (!identifier || !password) {
-    return res.status(400).json({ error: 'Identifier and password are required' });
-  }
-  
-  const result = await loginUser(identifier, password);
-  
-  if (result.success) {
-    res.json({ success: true, token: result.token, user: result.user });
-  } else {
-    res.status(401).json({ error: result.error });
-  }
-});
-
-// Initiate payment
 app.post('/api/pay', authenticate, async (req, res) => {
   const { phoneNumber, productId } = req.body;
   
@@ -279,7 +373,6 @@ app.post('/api/pay', authenticate, async (req, res) => {
     return res.status(400).json({ error: 'Phone number is required' });
   }
   
-  // Check if user already has access
   const hasAccess = await hasAccessToSellerDetails(req.userId, productId);
   if (hasAccess) {
     return res.status(400).json({ error: 'You already have access to seller details' });
@@ -291,7 +384,6 @@ app.post('/api/pay', authenticate, async (req, res) => {
   const result = await initiateSTKPush(phoneNumber, 20, accountReference, transactionDesc);
   
   if (result.success) {
-    // Record payment in database
     await recordPayment(req.userId, result.checkoutRequestID);
     res.json({ 
       success: true, 
@@ -303,15 +395,12 @@ app.post('/api/pay', authenticate, async (req, res) => {
   }
 });
 
-// M-Pesa callback endpoint
 app.post('/api/mpesa/callback', async (req, res) => {
-  console.log('M-Pesa callback received:', JSON.stringify(req.body, null, 2));
-  
+  console.log('M-Pesa callback received');
   const result = await handleMpesaCallback(req.body);
   res.json(result);
 });
 
-// Check payment status
 app.get('/api/payment-status/:checkoutRequestId', authenticate, async (req, res) => {
   const { checkoutRequestId } = req.params;
   const payment = await require('./payment').checkPaymentStatus(checkoutRequestId);
@@ -327,7 +416,6 @@ app.get('/api/payment-status/:checkoutRequestId', authenticate, async (req, res)
   }
 });
 
-// Check if user has access
 app.get('/api/check-access', authenticate, async (req, res) => {
   const { productId } = req.query;
   const hasAccess = await hasAccessToSellerDetails(req.userId, productId);
@@ -336,7 +424,6 @@ app.get('/api/check-access', authenticate, async (req, res) => {
 
 // ==================== ADMIN ROUTES ====================
 
-// Get all users (admin)
 app.get('/api/admin/users', authenticate, async (req, res) => {
   if (req.userRole !== 'admin') {
     return res.status(403).json({ error: 'Admin access required' });
@@ -356,7 +443,6 @@ app.get('/api/admin/users', authenticate, async (req, res) => {
   }
 });
 
-// Get all products with seller info (admin)
 app.get('/api/admin/products', authenticate, async (req, res) => {
   if (req.userRole !== 'admin') {
     return res.status(403).json({ error: 'Admin access required' });
@@ -377,7 +463,6 @@ app.get('/api/admin/products', authenticate, async (req, res) => {
   }
 });
 
-// Get all payments (admin)
 app.get('/api/admin/payments', authenticate, async (req, res) => {
   if (req.userRole !== 'admin') {
     return res.status(403).json({ error: 'Admin access required' });
@@ -398,7 +483,6 @@ app.get('/api/admin/payments', authenticate, async (req, res) => {
   }
 });
 
-// Get dashboard stats (admin)
 app.get('/api/admin/stats', authenticate, async (req, res) => {
   if (req.userRole !== 'admin') {
     return res.status(403).json({ error: 'Admin access required' });
@@ -424,7 +508,6 @@ app.get('/api/admin/stats', authenticate, async (req, res) => {
   }
 });
 
-// Delete product (admin)
 app.delete('/api/admin/products/:id', authenticate, async (req, res) => {
   if (req.userRole !== 'admin') {
     return res.status(403).json({ error: 'Admin access required' });
@@ -440,7 +523,6 @@ app.delete('/api/admin/products/:id', authenticate, async (req, res) => {
   }
 });
 
-// Toggle user status (admin)
 app.put('/api/admin/users/:id/toggle', authenticate, async (req, res) => {
   if (req.userRole !== 'admin') {
     return res.status(403).json({ error: 'Admin access required' });
@@ -458,7 +540,48 @@ app.put('/api/admin/users/:id/toggle', authenticate, async (req, res) => {
   }
 });
 
-// Serve HTML pages
+
+// Add this after your other routes - Serve uploaded images
+app.get('/api/image/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filepath = path.join(__dirname, 'uploads', filename);
+  
+  if (fs.existsSync(filepath)) {
+    res.sendFile(filepath);
+  } else {
+    res.status(404).json({ error: 'Image not found' });
+  }
+});
+
+
+// Check payment status endpoint
+app.get('/api/payment-status/:checkoutRequestId', authenticate, async (req, res) => {
+  const { checkoutRequestId } = req.params;
+  const db = getDatabase();
+  
+  try {
+    const payment = await db.get(
+      'SELECT status, mpesa_receipt, amount FROM payments WHERE checkout_request_id = ?',
+      [checkoutRequestId]
+    );
+    
+    if (payment) {
+      res.json({ 
+        status: payment.status,
+        receipt: payment.mpesa_receipt,
+        amount: payment.amount 
+      });
+    } else {
+      res.json({ status: 'pending' });
+    }
+  } catch (error) {
+    console.error('Error checking payment status:', error);
+    res.status(500).json({ error: 'Failed to check payment status' });
+  }
+});
+
+// ==================== SERVE HTML PAGES ====================
+
 app.get('/buyer', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'buyer.html'));
 });
@@ -471,16 +594,21 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// Start server
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// ==================== START SERVER ====================
+
 async function startServer() {
   await initializeDatabase();
   
   app.listen(PORT, () => {
-    console.log(`🚀 Kilimo Tech server running on port ${PORT}`);
-    console.log(`📱 Access the app at: http://localhost:${PORT}`);
-    console.log(`🛒 Buyer portal: http://localhost:${PORT}/buyer`);
-    console.log(`🏪 Seller portal: http://localhost:${PORT}/seller`);
-    console.log(`👑 Admin panel: http://localhost:${PORT}/admin`);
+    console.log(`Kilimo Tech server running on port ${PORT}`);
+    console.log(`Access the app at: http://localhost:${PORT}`);
+    console.log(`Buyer portal: http://localhost:${PORT}/buyer`);
+    console.log(`Seller portal: http://localhost:${PORT}/seller`);
+    console.log(`Admin panel: http://localhost:${PORT}/admin`);
   });
 }
 
