@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Admin Panel - Kilimo Tech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f4f0; padding: 16px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #eaf5ea; display: flex; justify-content: center; align-items: center; z-index: 2000; }
+        .login-overlay.hidden { display: none; }
+        .login-card { max-width: 400px; width: 90%; background: white; border-radius: 44px; overflow: hidden; }
+        .login-brand { background: linear-gradient(135deg, #1f4f1f, #2e7d32); padding: 30px; text-align: center; color: white; }
+        .login-brand i { font-size: 50px; margin-bottom: 15px; }
+        .login-brand h2 { font-size: 24px; }
+        .login-form { padding: 30px; }
+        .input-field { margin-bottom: 20px; }
+        .input-field label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; }
+        .input-field input { width: 100%; padding: 12px 16px; border: 1.5px solid #e0e0e0; border-radius: 40px; }
+        .login-btn { width: 100%; padding: 12px; background: #2e7d32; color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer; }
+        .demo-note { background: #f5f5f5; border-radius: 20px; padding: 12px; margin-top: 20px; font-size: 12px; text-align: center; }
+        .error-msg { background: #ffebee; color: #c62828; padding: 10px; border-radius: 20px; font-size: 12px; margin-bottom: 15px; display: none; }
+        .admin-header { background: white; border-radius: 28px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; }
+        .logo-area i { font-size: 28px; color: #2c6e2c; }
+        .logo-area h1 { font-size: 1.3rem; color: #1b4d1b; }
+        .btn-logout { background: #dc2626; border: none; color: white; padding: 6px 16px; border-radius: 30px; cursor: pointer; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; }
+        .tab-btn { padding: 10px 24px; background: white; border: none; border-radius: 40px; cursor: pointer; font-weight: 600; }
+        .tab-btn.active { background: #2e7d32; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: white; border-radius: 24px; padding: 20px; display: flex; align-items: center; gap: 15px; }
+        .stat-icon { width: 50px; height: 50px; background: #e8f5e9; border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #2e7d32; }
+        .stat-value { font-size: 28px; font-weight: 800; }
+        .stat-label { font-size: 12px; color: #666; }
+        .admin-card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .card-header input { padding: 8px 16px; border: 1px solid #ddd; border-radius: 40px; width: 250px; }
+        .table-responsive { overflow-x: auto; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+        .admin-table th { text-align: left; padding: 12px 8px; background: #f8faf8; border-bottom: 2px solid #e0e8e0; }
+        .admin-table td { padding: 12px 8px; border-bottom: 1px solid #e8ece8; }
+        .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .role-badge.admin { background: #f3e5f5; color: #7b1fa2; }
+        .role-badge.buyer { background: #e3f2fd; color: #1565c0; }
+        .role-badge.seller { background: #e8f5e9; color: #2e7d32; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .status-badge.active { background: #c8e6c9; color: #1b5e20; }
+        .status-badge.inactive { background: #ffcdd2; color: #c62828; }
+        .status-badge.completed { background: #c8e6c9; color: #1b5e20; }
+        .action-btn { background: #ffebee; border: none; padding: 5px 12px; border-radius: 20px; color: #c62828; cursor: pointer; font-size: 11px; font-weight: 600; }
+        .action-btn:hover { background: #ffcdd2; }
+        @media (max-width: 640px) { body { padding: 12px; } .stat-value { font-size: 22px; } .card-header input { width: 100%; } }
+    </style>
+</head>
+<body>
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-card">
+            <div class="login-brand"><i class="fas fa-tree"></i><h2>Admin Portal</h2><p>Kilimo Tech — secure access</p></div>
+            <div class="login-form">
+                <div id="loginError" class="error-msg"></div>
+                <div class="input-field"><label><i class="fas fa-envelope"></i> Email or Phone</label><input type="text" id="adminLoginId" placeholder="admin@kilimo.com"></div>
+                <div class="input-field"><label><i class="fas fa-lock"></i> Password</label><input type="password" id="adminPassword" placeholder="••••••"></div>
+                <button class="login-btn" onclick="attemptLogin()"><i class="fas fa-arrow-right-to-bracket"></i> Login to Dashboard</button>
+                <div class="demo-note"><strong>🔐 Demo admin</strong><br>Email: admin@kilimo.com / Password: admin123</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" style="display:none;">
+        <div class="container">
+            <div class="admin-header">
+                <div class="logo-area"><i class="fas fa-seedling"></i><h1>Kilimo Admin</h1></div>
+                <div><span id="adminName" style="margin-right:15px;">Admin</span><button class="btn-logout" onclick="logoutAdmin()">Exit</button></div>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
+                <button class="tab-btn" onclick="switchTab('users')">Users</button>
+                <button class="tab-btn" onclick="switchTab('products')">Products</button>
+                <button class="tab-btn" onclick="switchTab('payments')">Payments</button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboardTab" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-icon">👥</div><div><div class="stat-value" id="totalUsers">0</div><div class="stat-label">Total Users</div></div></div>
+                    <div class="stat-card"><div class="stat-icon">📦</div><div><div class="stat-value" id="totalProducts">0</div><div class="stat-label">Products</div></div></div>
+                    <div class="stat-card"><div class="stat-icon">💰</div><div><div class="stat-value" id="totalRevenue">0</div><div class="stat-label">Revenue (KSH)</div></div></div>
+                    <div class="stat-card"><div class="stat-icon">✅</div><div><div class="stat-value" id="activeProducts">0</div><div class="stat-label">Active Products</div></div></div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="usersTab" class="tab-content">
+                <div class="admin-card">
+                    <div class="card-header"><h3>All Users</h3><input type="text" id="userSearch" placeholder="🔍 Search users..." onkeyup="searchUsers()"></div>
+                    <div class="table-responsive"><table class="admin-table"><thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th><th>Status</th><th>Action</th></tr></thead><tbody id="usersTableBody"></tbody></table></div>
+                </div>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="productsTab" class="tab-content">
+                <div class="admin-card">
+                    <div class="card-header"><h3>All Products</h3><input type="text" id="productSearch" placeholder="🔍 Search products..." onkeyup="searchProducts()"></div>
+                    <div class="table-responsive"><table class="admin-table"><thead><tr><th>ID</th><th>Title</th><th>Seller</th><th>Category</th><th>Price</th><th>Location</th><th>Posted</th><th>Action</th></tr></thead><tbody id="productsTableBody"></tbody></table></div>
+                </div>
+            </div>
+
+            <!-- Payments Tab -->
+            <div id="paymentsTab" class="tab-content">
+                <div class="admin-card">
+                    <h3 style="margin-bottom:16px;">Payment Transactions</h3>
+                    <div class="table-responsive"><table class="admin-table"><thead><tr><th>ID</th><th>Buyer</th><th>Phone</th><th>Amount</th><th>Status</th><th>Receipt</th><th>Date</th></tr></thead><tbody id="paymentsTableBody"></tbody></table></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAdmin = null;
+        let usersCache = [], productsCache = [], paymentsCache = [];
+
+        function attemptLogin() {
+            const identifier = document.getElementById('adminLoginId').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            const users = JSON.parse(localStorage.getItem('kilimo_users') || '[]');
+            const admin = users.find(u => (u.email === identifier || u.phone === identifier) && u.password === password && u.role === 'admin');
+            
+            if (admin) {
+                localStorage.setItem('kilimo_current_user', JSON.stringify(admin));
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('adminName').innerText = admin.username;
+                currentAdmin = admin;
+                loadDashboard();
+            } else {
+                const errDiv = document.getElementById('loginError');
+                errDiv.innerText = 'Invalid admin credentials. Use admin@kilimo.com / admin123';
+                errDiv.style.display = 'block';
+                setTimeout(() => errDiv.style.display = 'none', 3000);
+            }
+        }
+
+        function loadDashboard() { loadStats(); loadUsers(); loadProducts(); loadPayments(); }
+        
+        function loadStats() {
+            const users = JSON.parse(localStorage.getItem('kilimo_users') || '[]');
+            const products = JSON.parse(localStorage.getItem('kilimo_products') || '[]');
+            const payments = JSON.parse(localStorage.getItem('kilimo_payments') || '[]');
+            document.getElementById('totalUsers').innerText = users.length;
+            document.getElementById('totalProducts').innerText = products.length;
+            document.getElementById('totalRevenue').innerText = `KSH ${payments.reduce((s, p) => s + (p.amount || 0), 0).toLocaleString()}`;
+            document.getElementById('activeProducts').innerText = products.filter(p => p.status === 'active').length;
+        }
+
+        function loadUsers() {
+            usersCache = JSON.parse(localStorage.getItem('kilimo_users') || '[]');
+            renderUsers(usersCache);
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+            if (!tbody) return;
+            if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="8">No users found</td></tr>'; return; }
+            tbody.innerHTML = users.map(u => `<tr><td>${u.id}</td><td>${escapeHtml(u.username)}</td><td>${escapeHtml(u.email)}</td><td>${u.phone}</td><td><span class="role-badge ${u.role}">${u.role}</span></td><td>${new Date(u.created_at).toLocaleDateString()}</td><td><span class="status-badge ${u.is_active ? 'active' : 'inactive'}">${u.is_active ? 'Active' : 'Inactive'}</span></td><td><button class="action-btn" onclick="toggleUserStatus(${u.id}, ${u.is_active})">${u.is_active ? 'Deactivate' : 'Activate'}</button></td></tr>`).join('');
+        }
+
+        function searchUsers() { const term = document.getElementById('userSearch').value.toLowerCase(); renderUsers(usersCache.filter(u => u.username.toLowerCase().includes(term) || u.email.toLowerCase().includes(term))); }
+        
+        function toggleUserStatus(id, curr) {
+            const users = JSON.parse(localStorage.getItem('kilimo_users') || '[]');
+            const idx = users.findIndex(u => u.id === id);
+            if (idx !== -1) { users[idx].is_active = !curr; localStorage.setItem('kilimo_users', JSON.stringify(users)); loadUsers(); loadStats(); alert(`User ${!curr ? 'activated' : 'deactivated'}`); }
+        }
+
+        function loadProducts() {
+            const products = JSON.parse(localStorage.getItem('kilimo_products') || '[]');
+            const users = JSON.parse(localStorage.getItem('kilimo_users') || '[]');
+            productsCache = products.map(p => ({ ...p, seller_name: users.find(u => u.id === p.seller_id)?.username || 'Unknown' }));
+            renderProducts(productsCache);
+        }
+
+        function renderProducts(prods) {
+            const tbody = document.getElementById('productsTableBody');
+            if (!tbody) return;
+            if (prods.length === 0) { tbody.innerHTML = '<tr><td colspan="8">No products found</td></tr>'; return; }
+            tbody.innerHTML = prods.map(p => `<tr><td>${p.id}</td><td>${escapeHtml(p.title)}</td><td>${escapeHtml(p.seller_name)}</td><td>${p.category}</td><td>KSH ${p.price}</td><td>${escapeHtml(p.location)}</td><td>${new Date(p.created_at).toLocaleDateString()}</td><td><button class="action-btn" onclick="deleteProduct(${p.id})">Delete</button></td></tr>`).join('');
+        }
+
+        function searchProducts() { const term = document.getElementById('productSearch').value.toLowerCase(); renderProducts(productsCache.filter(p => p.title.toLowerCase().includes(term) || p.seller_name.toLowerCase().includes(term))); }
+        
+        function deleteProduct(id) {
+            if (confirm('Delete this product permanently?')) {
+                const products = JSON.parse(localStorage.getItem('kilimo_products') || '[]');
+                localStorage.setItem('kilimo_products', JSON.stringify(products.filter(p => p.id !== id)));
+                loadProducts();
+                loadStats();
+                alert('Product deleted');
+            }
+        }
+
+        function loadPayments() {
+            const payments = JSON.parse(localStorage.getItem('kilimo_payments') || '[]');
+            const users = JSON.parse(localStorage.getItem('kilimo_users') || '[]');
+            paymentsCache = payments.map(p => ({ ...p, buyer_name: users.find(u => u.id === p.buyer_id)?.username || 'Unknown' }));
+            renderPayments(paymentsCache);
+        }
+
+        function renderPayments(pays) {
+            const tbody = document.getElementById('paymentsTableBody');
+            if (!tbody) return;
+            if (pays.length === 0) { tbody.innerHTML = '<tr><td colspan="7">No payments yet</td></tr>'; return; }
+            tbody.innerHTML = pays.map(p => `<tr><td>${p.id}</td><td>${escapeHtml(p.buyer_name)}</td><td>${p.phone}</td><td>KSH ${p.amount}</td><td><span class="status-badge completed">${p.status}</span></td><td>${p.mpesa_receipt || 'N/A'}</td><td>${new Date(p.created_at).toLocaleString()}</td></tr>`).join('');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(`${tab}Tab`).classList.add('active');
+            if (tab === 'dashboard') loadStats();
+            else if (tab === 'users') loadUsers();
+            else if (tab === 'products') loadProducts();
+            else if (tab === 'payments') loadPayments();
+        }
+
+        function logoutAdmin() { localStorage.removeItem('kilimo_current_user'); window.location.reload(); }
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+
+        // Check existing session
+        const savedUser = localStorage.getItem('kilimo_current_user');
+        if (savedUser && savedUser !== 'null') {
+            const user = JSON.parse(savedUser);
+            if (user.role === 'admin') {
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('adminName').innerText = user.username;
+                currentAdmin = user;
+                loadDashboard();
+            }
+        }
+    </script>
+</body>
+</html>
