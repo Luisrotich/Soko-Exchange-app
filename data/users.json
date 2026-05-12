@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "username": "Admin User",
+    "email": "admin@kilimo.com",
+    "phone": "254700000000",
+    "password": "$2a$10$xzdzvWQbLgwYKbCo8IKOleMA.s/KusPHn.pjPfyB1EWIbghGSwhYW",
+    "role": "admin",
+    "is_active": true,
+    "created_at": "2026-04-24T18:22:49.416Z"
+  },
+  {
+    "id": 2,
+    "username": "Luis Seller",
+    "email": "luisrotich1@gmail.com",
+    "phone": "254745972345",
+    "password": "$2a$10$dhOtukIV/DHSpR/QXTEKp.Xh/5ecbyDqKP0XiVsq9KORjJ9hSQr1G",
+    "role": "seller",
+    "is_active": true,
+    "created_at": "2026-04-24T18:22:49.569Z"
+  },
+  {
+    "id": 3,
+    "username": "John Buyer",
+    "email": "buyer@test.com",
+    "phone": "254711223344",
+    "password": "$2a$10$xwnXFZ8u7pEW7xzrOUXY0uBJ3Xl45oZpdJm6p7GKSzCgjwuwMInRa",
+    "role": "buyer",
+    "is_active": true,
+    "created_at": "2026-04-24T18:22:49.752Z"
+  },
+  {
+    "id": 4,
+    "username": "luisrotich@gmail.com",
+    "email": "luisrotich@gmail.com",
+    "phone": "254745972345",
+    "password": "$2a$10$u1aWe.IMoXKieG.JpXt6gOxyP8YxvjHMn2BjzE5JQuH5R3.0ZZ86C",
+    "role": "buyer",
+    "is_active": true,
+    "created_at": "2026-04-24T18:56:52.694Z"
+  },
+  {
+    "id": 5,
+    "username": "luisrotich@gmail.com",
+    "email": "l.rspacekenya@gmail.com",
+    "phone": "254745972390",
+    "password": "$2a$10$EWQ6c/yYT8ZnNuYi4f9uc.tsFqhGt.W7OBpwGkxryVrFL6ZumOUre",
+    "role": "seller",
+    "is_active": true,
+    "created_at": "2026-04-24T19:09:33.157Z"
+  },
+  {
+    "id": 6,
+    "username": "luisrotich",
+    "email": "luisrotich100@gmail.com",
+    "phone": "254745972100",
+    "password": "$2a$10$lG4r2D6ae3kNy2XHajaVj.cDuiLhdc463wAAHcAaSOSE.L3lFHiiW",
+    "role": "buyer",
+    "is_active": true,
+    "created_at": "2026-04-28T21:39:14.078Z"
+  },
+  {
+    "id": 7,
+    "username": "luis steve",
+    "email": "luisrotichtyt@gmail.com",
+    "phone": "254745972346",
+    "password": "$2a$10$oSU45/MF2y9OymMn37kg9.aJrzSIhE7biBirJRc7dLPQyxvCoPreq",
+    "role": "buyer",
+    "is_active": true,
+    "created_at": "2026-05-06T18:31:03.625Z"
+  },
+  {
+    "id": 8,
+    "username": "admin rtyuiop",
+    "email": "luisrotich320@gmail.com",
+    "phone": "254745972320",
+    "password": "$2a$10$ABPNQoeRo4MmQJEzBSBtKO0dWUpW6iPrvXXTyCoZKTgu0LuuP4NHm",
+    "role": "seller",
+    "is_active": true,
+    "created_at": "2026-05-06T18:37:20.704Z"
+  },
+  {
+    "id": 9,
+    "username": "leaky nigel",
+    "email": "luisrotich12345@gmail.com",
+    "phone": "254745912345",
+    "password": "$2a$10$zPILw1mpS9GNjEbM57v2b.DuLJs429xlivpwYDSW39YgYZA/thcmO",
+    "role": "buyer",
+    "is_active": true,
+    "created_at": "2026-05-12T11:34:17.154Z"
+  },
+  {
+    "id": 10,
+    "username": "john mwiki",
+    "email": "luisrotich098765@gmail.com",
+    "phone": "254745909870",
+    "password": "$2a$10$MNDPW9xgBiYiYERZACiLReQc4aive3gUhbhTrROprTGEqEg7Chy/G",
+    "role": "seller",
+    "is_active": true,
+    "created_at": "2026-05-12T11:35:27.651Z"
+  },
+  {
+    "id": 11,
+    "username": "james",
+    "email": "luisrotich1000@gmail.com",
+    "phone": "254745971000",
+    "password": "$2a$10$bU3mtjOoh/O.AQzp9gptIOwp0bJv1HSO44ZBVAnNRNakRolkB2SAG",
+    "role": "buyer",
+    "is_active": true,
+    "created_at": "2026-05-12T17:28:58.841Z"
+  }
+]

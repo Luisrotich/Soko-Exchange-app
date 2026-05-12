@@ -1,0 +1,51 @@
+{
+  "name": "Soko exchange Marketplace",
+  "short_name": "Soko exchange",
+  "description": "Agricultural marketplace connecting farmers with buyers",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#2e7d32",
+  "background_color": "#eaf5ea",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Marketplace",
+      "short_name": "Shop",
+      "description": "Browse products",
+      "url": "/buyer.html",
+      "icons": [{ "src": "/favicon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "My Products",
+      "short_name": "My Items",
+      "description": "View your listings",
+      "url": "/seller.html",
+      "icons": [{ "src": "/favicon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Admin Panel",
+      "short_name": "Admin",
+      "description": "Manage platform",
+      "url": "/admin.html",
+      "icons": [{ "src": "/favicon.png", "sizes": "192x192" }]
+    }
+  ],
+  "categories": ["shopping", "agriculture", "business"],
+  "lang": "en",
+  "dir": "ltr"
+}

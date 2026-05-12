@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Seller Soko Exchange</title>
+
+    <!-- Favicon & PWA Meta -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2e7d32">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Soko Exchange">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f4f0; color: #1e2a1e; padding-bottom: 80px; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px 16px 40px; }
+        .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; background: white; padding: 12px 20px; border-radius: 28px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .logo { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .logo i { font-size: 24px; color: #2c6e2c; }
+        .logo h1 { font-size: 1.3rem; color: #1b4d1b; }
+        .seller-badge { background: #eaf7ea; padding: 5px 12px; border-radius: 40px; font-size: 0.75rem; color: #2c6e2c; }
+        .seller-name { font-weight: 600; background: #f5f5f5; padding: 5px 12px; border-radius: 40px; font-size: 0.85rem; }
+        .btn-logout { background: #dc2626; border: none; color: white; padding: 6px 14px; border-radius: 30px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+        .btn-logout:hover { background: #b91c1c; }
+        .welcome-banner { background: linear-gradient(135deg, #1f4f1f, #2e7d32); border-radius: 24px; padding: 16px 20px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .welcome-banner h2 { font-size: 1.2rem; margin-bottom: 4px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+        .stat-card { background: white; border-radius: 20px; padding: 14px 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .stat-card:active { transform: scale(0.98); }
+        .stat-icon i { font-size: 1.6rem; color: #2c6e2c; }
+        .stat-value { font-size: 1.4rem; font-weight: 800; }
+        .stat-label { font-size: 0.7rem; color: #5a6e5a; }
+        @media (min-width: 640px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+        .btn-primary { background: #2c6e2c; color: white; border: none; padding: 8px 18px; border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .btn-primary:hover { background: #1f4f1f; transform: scale(1.02); }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 16px; }
+        .product-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.25s ease; }
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .product-image { width: 100%; height: 180px; object-fit: cover; }
+        .product-info { padding: 12px; }
+        .product-title { font-weight: 700; font-size: 1rem; margin-bottom: 5px; }
+        .product-price { color: #2c6e2c; font-weight: 700; margin: 4px 0; }
+        .product-location { font-size: 12px; color: #666; display: flex; align-items: center; gap: 4px; margin: 5px 0; }
+        .product-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-edit, .btn-delete { padding: 5px 12px; border-radius: 20px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .btn-edit { background: #e0e8e0; color: #2c6e2c; }
+        .btn-delete { background: #ffe0e0; color: #dc2626; }
+        .empty-state { text-align: center; padding: 40px; color: #6e8b6e; }
+        .image-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .preview-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; border: 2px solid #2e7d32; cursor: pointer; position: relative; }
+        .preview-img:hover { opacity: 0.8; }
+        .image-upload-area { border: 2px dashed #c8e6c9; border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: #f9fff9; }
+        .image-upload-area:hover { border-color: #2e7d32; background: #f0f9f0; }
+        .image-counter { font-size: 12px; color: #2e7d32; margin-top: 8px; }
+        
+        /* Enhanced Mobile Bottom Navigation */
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 12px;
+            left: 16px;
+            right: 16px;
+            width: auto;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 48px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(46, 125, 50, 0.2);
+            z-index: 200;
+            transition: all 0.2s ease;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 0;
+            border-radius: 40px;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            cursor: pointer;
+            flex: 1;
+            max-width: 90px;
+            background: transparent;
+        }
+        .nav-item i { font-size: 1.4rem; color: #8ba88b; transition: all 0.2s; }
+        .nav-item span { font-size: 0.7rem; font-weight: 500; color: #8ba88b; transition: all 0.2s; }
+        .nav-item.active { background: linear-gradient(135deg, #eaf7ea, #d4ecd4); transform: translateY(-2px); }
+        .nav-item.active i { color: #2e7d32; transform: scale(1.1); text-shadow: 0 0 6px rgba(46,125,50,0.3); }
+        .nav-item.active span { color: #2e7d32; font-weight: 700; }
+        .nav-item:active { transform: scale(0.96); }
+        
+        /* Install App Popup */
+        .install-popup {
+            position: fixed;
+            bottom: 90px;
+            left: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #f5fbf5 100%);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+            border: 1px solid rgba(46,125,50,0.3);
+            z-index: 210;
+            animation: slideUpPop 0.4s cubic-bezier(0.2,0.9,0.4,1.1);
+        }
+        .install-popup.hidden { display: none; }
+        .install-popup-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+        .install-popup-content i { font-size: 2.2rem; color: #2e7d32; }
+        .install-popup-text h4 { font-size: 1rem; font-weight: 800; color: #1e3a1e; }
+        .install-popup-text p { font-size: 0.7rem; color: #5e7a5e; margin-top: 2px; }
+        .install-popup-buttons { display: flex; gap: 10px; }
+        .install-btn { background: #2e7d32; border: none; color: white; padding: 8px 20px; border-radius: 40px; font-weight: 700; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+        .close-install { background: #f0f0f0; border: none; color: #444; padding: 8px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 0.8rem; }
+        
+        .install-banner {
+            background: linear-gradient(90deg, #2e7d32, #4caf50);
+            color: white;
+            padding: 12px 16px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            z-index: 100;
+        }
+        
+        @keyframes slideUpPop {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Bottom Sheet Modal Styles */
+        .bottom-sheet-modal {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            border-radius: 28px 28px 0 0;
+            z-index: 300;
+            box-shadow: 0 -8px 30px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .bottom-sheet-content {
+            padding: 24px 20px 30px;
+        }
+        .bottom-sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eaf3ea;
+            padding-bottom: 12px;
+        }
+        .bottom-sheet-header h3 {
+            font-size: 1.5rem;
+            color: #2c6e2c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .close-sheet {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #888;
+        }
+        .sheet-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 299;
+        }
+        .info-card {
+            background: #f9fef9;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 5px solid #2e7d32;
+        }
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding: 8px;
+            background: white;
+            border-radius: 16px;
+        }
+        .info-row i {
+            width: 32px;
+            color: #2e7d32;
+            font-size: 1.2rem;
+        }
+        .resource-badge {
+            background: #e8f5e9;
+            padding: 12px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; border-radius: 32px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; padding: 24px; }
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.85rem; color: #1e3a1e; }
+        input, select, textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #e2ede2; border-radius: 24px; font-family: inherit; }
+        .search-filter-group { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+        .search-filter-group input { flex: 1; }
+        .search-filter-group select { width: auto; min-width: 100px; }
+        .btn-success { background: #2c6e2c; color: white; border: none; padding: 12px 24px; border-radius: 40px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px; transition: 0.2s; }
+        .btn-cancel { background: #f0f0f0; color: #333; border: none; padding: 12px 24px; border-radius: 40px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 8px; }
+        .icon-large { font-size: 4rem; margin-bottom: 15px; }
+        .text-warning { color: #f59e0b; }
+        .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; margin-top: 10px; }
+        .image-item { position: relative; }
+        .image-item img { width: 100%; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
+        .remove-image { position: absolute; top: -5px; right: -5px; background: #dc2626; color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .seller-info{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.seller-name{
+    color: #fff;
+    background: linear-gradient(135deg, #01722c, #015509);
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.seller-name::before{
+    font-size: 16px;
+}
+
+.seller-name:hover{
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    cursor: pointer;
+}
+    </style>
+</head>
+<body>
+    <!-- Install Banner -->
+    <div id="installBanner" class="install-banner" onclick="forceInstall()" style="display: none;">
+        <i class="fas fa-download"></i> 
+        <span> Install Soko Exchange App for Better Experience</span>
+        <i class="fas fa-arrow-right"></i>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="mobile-bottom-nav">
+        <div class="nav-item active" data-tab="home"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="nav-item" data-tab="account"><i class="fas fa-user-circle"></i><span>Account</span></div>
+        <div class="nav-item" data-tab="resources"><i class="fas fa-book-open"></i><span>Resources</span></div>
+        <div class="nav-item" data-tab="help"><i class="fas fa-question-circle"></i><span>Help</span></div>
+    </div>
+
+    <!-- Install App Popup -->
+    <div id="installPopup" class="install-popup hidden">
+        <div class="install-popup-content">
+            <i class="fas fa-mobile-alt"></i>
+            <div class="install-popup-text">
+                <h4> Install Soko Exchange App</h4>
+                <p>Faster access • Offline ready • Push notifications</p>
+            </div>
+        </div>
+        <div class="install-popup-buttons">
+            <button class="install-btn" id="doInstallBtn">Install Now</button>
+            <button class="close-install" id="closeInstallBtn">Maybe later</button>
+        </div>
+    </div>
+
+    <!-- Bottom Sheet Overlay & Modals -->
+    <div id="sheetOverlay" class="sheet-overlay"></div>
+    
+    <!-- Account Bottom Sheet -->
+    <div id="accountSheet" class="bottom-sheet-modal">
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3><i class="fas fa-user-circle"></i> My Account</h3>
+                <button class="close-sheet" onclick="closeBottomSheet('accountSheet')">&times;</button>
+            </div>
+            <div class="info-card">
+                <div class="info-row"><i class="fas fa-user"></i> <strong>Name:</strong> <span id="sheetUserName">Seller Name</span></div>
+                <div class="info-row"><i class="fas fa-envelope"></i> <strong>Email:</strong> <span id="sheetUserEmail">seller@example.com</span></div>
+                <div class="info-row"><i class="fas fa-store"></i> <strong>Role:</strong> 🛒 Seller</div>
+                <div class="info-row"><i class="fas fa-calendar-alt"></i> <strong>Member since:</strong> 2025</div>
+                <div class="info-row"><i class="fas fa-chart-line"></i> <strong>Total Products Listed:</strong> <span id="sheetTotalProducts">0</span></div>
+                <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resources Bottom Sheet -->
+    <div id="resourcesSheet" class="bottom-sheet-modal">
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3><i class="fas fa-leaf"></i> Resources</h3>
+                <button class="close-sheet" onclick="closeBottomSheet('resourcesSheet')">&times;</button>
+            </div>
+            <div class="resource-badge"><i class="fas fa-tractor fa-fw"></i> <strong>Guide:</strong> Sustainable crop rotation & organic fertilizers</div>
+            <div class="resource-badge"><i class="fas fa-chart-simple"></i> <strong>Market Prices Today:</strong> Maize: 120 KSH/kg | Beans: 95 KSH/kg | Tomatoes: 70 KSH/kg</div>
+            <div class="resource-badge"><i class="fas fa-cloud-sun"></i> <strong>Weather Forecast:</strong> Light rains expected in Central region this week</div>
+            <div class="resource-badge"><i class="fas fa-landmark"></i> <strong>Gov Programs:</strong> Subsidized seeds & e-voucher system open until June</div>
+            <div class="resource-badge"><i class="fas fa-graduation-cap"></i> <strong>Webinar:</strong> Digital marketing for farmers - Every Friday 3PM</div>
+        </div>
+    </div>
+
+    <!-- Help Bottom Sheet -->
+    <div id="helpSheet" class="bottom-sheet-modal">
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3><i class="fas fa-headset"></i> Help Center</h3>
+                <button class="close-sheet" onclick="closeBottomSheet('helpSheet')">&times;</button>
+            </div>
+            <div class="info-card">
+                <div class="info-row"><i class="fas fa-phone-alt"></i> <strong>Support Hotline:</strong> 0740369130</div>
+                <div class="info-row"><i class="fas fa-envelope-open-text"></i> <strong>Email:</strong> support@kilimotech.co.ke</div>
+                <div class="info-row"><i class="fab fa-whatsapp"></i> <strong>WhatsApp:</strong> +254740369130</div>
+                <div class="info-row"><i class="fas fa-clock"></i> <strong>Hours:</strong> Mon-Fri 8am - 6pm</div>
+                <div class="info-row"><i class="fas fa-question-circle"></i> <strong>FAQ:</strong> How to add product? Click 'Add Product' and fill details</div>
+                <div class="info-row"><i class="fas fa-shield-alt"></i> <strong>Safety Tips:</strong> Verify buyers, meet in safe locations</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="welcome-banner">
+            <div><h2>Welcome, <span id="welcomeName">Seller</span>! </h2><p>Manage your products and grow your business</p></div>
+           <div class="seller-info">
+    <span id="sellerName" class="seller-name">
+        Loading...
+    </span>
+</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-box"></i></div><div><div class="stat-value" id="totalProducts">0</div><div class="stat-label">Products</div></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-eye"></i></div><div><div class="stat-value" id="totalViews">0</div><div class="stat-label">Views</div></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-phone"></i></div><div><div class="stat-value" id="totalContacts">0</div><div class="stat-label">Contacts</div></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><div><div class="stat-value" id="totalEarnings">0</div><div class="stat-label">Earnings (KSH)</div></div></div>
+        </div>
+
+        <div class="section-header">
+            <h2> My Products</h2>
+            <button class="btn-primary" onclick="openAddModal()"><i class="fas fa-plus"></i> Add Product</button>
+        </div>
+
+        <div class="search-filter-group">
+            <input type="text" id="searchInput" placeholder="🔍 Search products..." onkeyup="searchProducts()">
+            <select id="statusFilter" onchange="filterProducts()">
+                <option value="all">All</option>
+                <option value="active">Active</option>
+                <option value="sold">Sold</option>
+            </select>
+        </div>
+
+        <div id="productsGrid" class="products-grid"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
+    </div>
+
+    <!-- Product Modals -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom:20px;"><i class="fas fa-plus-circle"></i> Add New Product</h2>
+            <form id="addForm" onsubmit="submitAddProduct(event)">
+                <div class="form-group">
+                    <label>Title *</label>
+                    <input type="text" id="prodTitle" placeholder="Product title" required>
+                </div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="prodCategory" required>
+                        <option value="">Select</option>
+                        <option value="food">Food</option>
+                        <option value="farming">Farming</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="animals">Animals</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Price (KSH) *</label>
+                    <input type="number" id="prodPrice" placeholder="e.g., 1500" required>
+                </div>
+                <div class="form-group">
+                    <label>Location *</label>
+                    <input type="text" id="prodLocation" placeholder="e.g., Nairobi" required>
+                </div>
+                <div class="form-group">
+                    <label>Description *</label>
+                    <textarea id="prodDescription" rows="3" placeholder="Describe your product..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Images (Up to 7 images) *</label>
+                    <div class="image-upload-area" onclick="document.getElementById('prodImages').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #2e7d32;"></i>
+                        <p>Click to select up to 7 images</p>
+                        <input type="file" id="prodImages" accept="image/*" multiple style="display: none;" onchange="previewImages(this)">
+                    </div>
+                    <div class="image-counter" id="imageCounter">0/7 images selected</div>
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+                <button type="submit" class="btn-success"><i class="fas fa-check"></i> Post Product</button>
+                <button type="button" class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom:20px;">Edit Product</h2>
+            <form id="editForm" onsubmit="submitEdit(event)">
+                <input type="hidden" id="editId">
+                <div class="form-group"><label>Title</label><input type="text" id="editTitle" required></div>
+                <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3" required></textarea></div>
+                <div class="form-group"><label>Price (KSH)</label><input type="number" id="editPrice" required></div>
+                <div class="form-group"><label>Location</label><input type="text" id="editLocation" required></div>
+                <div class="form-group"><label>Status</label>
+                    <select id="editStatus">
+                        <option value="active">Active</option>
+                        <option value="sold">Sold</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-success">Save Changes</button>
+                <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="deleteModal" class="modal">
+        <div class="modal-content" style="text-align:center;">
+            <i class="fas fa-exclamation-triangle icon-large text-warning"></i>
+            <h3>Delete Product?</h3>
+            <p>This action cannot be undone!</p>
+            <button class="btn-success" onclick="confirmDelete()" style="background:#dc2626;">Yes, Delete</button>
+            <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+        </div>
+    </div>
+    
+    <div id="toastModal" class="modal">
+        <div class="modal-content" style="max-width:350px; text-align:center; background:#1e3a1e; color:white;">
+            <i class="fas fa-check-circle" style="font-size:3rem; margin-bottom:10px;"></i>
+            <p id="toastMessage" style="font-size:1rem;">Success!</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        let currentUser = null;
+        let authToken = null;
+        let products = [];
+        let editId = null;
+        let deleteId = null;
+        let selectedFiles = [];
+        let deferredPrompt = null;
+        let installPromptShown = false;
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toastModal');
+            const toastMsg = document.getElementById('toastMessage');
+            const icon = toast.querySelector('i');
+            toastMsg.innerText = message;
+            if (isError) { 
+                icon.className = 'fas fa-exclamation-circle'; 
+                icon.style.color = '#f59e0b'; 
+                toast.querySelector('.modal-content').style.background = '#dc2626'; 
+            } else { 
+                icon.className = 'fas fa-check-circle'; 
+                icon.style.color = '#4caf50'; 
+                toast.querySelector('.modal-content').style.background = '#1e3a1e'; 
+            }
+            toast.style.display = 'flex';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+        
+        // Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => console.log('✅ Service Worker registered:', reg))
+                    .catch(err => console.log('❌ Service Worker registration failed:', err));
+            });
+        }
+        
+        // PWA Install
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('✅ Install prompt captured');
+            installPromptShown = false;
+            const installPopup = document.getElementById('installPopup');
+            if (installPopup) installPopup.classList.remove('hidden');
+        });
+        
+        function installApp() { 
+            if (deferredPrompt) { 
+                installPromptShown = true;
+                deferredPrompt.prompt(); 
+                deferredPrompt.userChoice.then((result) => { 
+                    if (result.outcome === 'accepted') {
+                        showToast('Installing Soko Exchange App... 🚀');
+                    }
+                    deferredPrompt = null; 
+                    document.getElementById('installPopup').classList.add('hidden'); 
+                    document.getElementById('installBanner').style.display = 'none';
+                }); 
+            } else { 
+                forceInstall();
+            } 
+        }
+        
+        function forceInstall() {
+            if (deferredPrompt) installApp();
+            else showToast('Click browser menu → "Install app" or "Add to Home Screen"', false);
+        }
+        
+        function closeInstallPopup() { 
+            document.getElementById('installPopup').classList.add('hidden');
+            setTimeout(() => {
+                if (!installPromptShown && !deferredPrompt) {
+                    const banner = document.getElementById('installBanner');
+                    if (banner) banner.style.display = 'flex';
+                }
+            }, 3000);
+        }
+        
+        document.getElementById('doInstallBtn')?.addEventListener('click', installApp);
+        document.getElementById('closeInstallBtn')?.addEventListener('click', closeInstallPopup);
+
+        // Bottom Sheet Logic
+        function openBottomSheet(sheetId) {
+            const sheet = document.getElementById(sheetId);
+            const overlay = document.getElementById('sheetOverlay');
+            if (sheet) sheet.style.display = 'block';
+            if (overlay) overlay.style.display = 'block';
+            if(sheetId === 'accountSheet' && currentUser) {
+                document.getElementById('sheetUserName').innerText = currentUser.username;
+                document.getElementById('sheetUserEmail').innerText = currentUser.email;
+                document.getElementById('sheetTotalProducts').innerText = products.length;
+            }
+        }
+        
+        function closeBottomSheet(sheetId) {
+            const sheet = document.getElementById(sheetId);
+            const overlay = document.getElementById('sheetOverlay');
+            if (sheet) sheet.style.display = 'none';
+            if (overlay && !document.querySelector('.bottom-sheet-modal[style*="display: block"]')) {
+                overlay.style.display = 'none';
+            }
+        }
+        
+        document.getElementById('sheetOverlay')?.addEventListener('click', () => { 
+            closeBottomSheet('accountSheet'); 
+            closeBottomSheet('resourcesSheet'); 
+            closeBottomSheet('helpSheet'); 
+        });
+        
+        async function loadData() {
+            const token = localStorage.getItem('Soko exchange_token');
+            if (!token) { 
+                window.location.replace('index.html'); 
+                return; 
+            }
+            try {
+                const response = await fetch(API_BASE + '/verify', { 
+                    headers: { 'Authorization': 'Bearer ' + token } 
+                });
+                const data = await response.json();
+                if (data.valid && data.user.role === 'seller') {
+                    currentUser = data.user; 
+                    authToken = token;
+                    document.getElementById('sellerName').innerHTML = `<i class="fas fa-store"></i> ${currentUser.username}`;
+                    document.getElementById('welcomeName').innerText = currentUser.username.split(' ')[0];
+                    loadSellerProducts();
+                } else { 
+                    localStorage.removeItem('Soko exchange_token'); 
+                    window.location.replace('index.html'); 
+                }
+            } catch (error) { 
+                showToast('Connection error. Make sure server is running.', true); 
+            }
+        }
+        
+        async function loadSellerProducts() {
+            try {
+                const response = await fetch(API_BASE + '/my-products', { 
+                    headers: { 'Authorization': 'Bearer ' + authToken } 
+                });
+                products = await response.json();
+                renderProducts(); 
+                updateStats();
+                if(document.getElementById('sheetTotalProducts')) 
+                    document.getElementById('sheetTotalProducts').innerText = products.length;
+            } catch (error) { 
+                showToast('Error loading products', true); 
+            }
+        }
+        
+        function updateStats() {
+            document.getElementById('totalProducts').innerText = products.length;
+            const totalViews = products.reduce((s, p) => s + (p.views || 0), 0);
+            document.getElementById('totalViews').innerText = totalViews;
+            document.getElementById('totalEarnings').innerText = products.length * 20;
+            document.getElementById('totalContacts').innerText = products.length;
+        }
+        
+        function getImageUrl(imagePath) { 
+            if(!imagePath) return 'https://placehold.co/300x200/2e7d32/white?text=No+Image'; 
+            if(imagePath.startsWith('http')) return imagePath; 
+            if(imagePath.startsWith('/uploads/')) return 'http://localhost:3000'+imagePath; 
+            return 'https://placehold.co/300x200/2e7d32/white?text=Product'; 
+        }
+        
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+            const statusFilter = document.getElementById('statusFilter')?.value || 'all';
+            let filtered = products.filter(p => p.title.toLowerCase().includes(searchTerm) || p.description.toLowerCase().includes(searchTerm));
+            if (statusFilter !== 'all') filtered = filtered.filter(p => p.status === statusFilter);
+            if (filtered.length === 0) { 
+                grid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>No products found</p><button class="btn-primary" onclick="openAddModal()" style="margin-top:10px;">+ Add Product</button></div>'; 
+                return; 
+            }
+            grid.innerHTML = filtered.map(p => { 
+                let images = []; 
+                try { images = JSON.parse(p.images || '[]'); } catch(e) {} 
+                const mainImage = images.length>0 ? getImageUrl(images[0]) : 'https://placehold.co/300x200/2e7d32/white?text=Product'; 
+                const imageCount = images.length;
+                return `<div class="product-card">
+                    <img src="${mainImage}" class="product-image" onerror="this.src='https://placehold.co/300x200/2e7d32/white?text=Product'">
+                    <div class="product-info">
+                        <div class="product-title">${escapeHtml(p.title)} ${p.status === 'sold' ? '<span style="background:#fef3c7; color:#b45309; font-size:0.7rem; padding:2px 8px; border-radius:12px; margin-left:6px;">SOLD</span>' : ''}</div>
+                        <div class="product-price">KSH ${p.price.toLocaleString()}</div>
+                        <div class="product-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(p.location)}</div>
+                        <div><small><i class="fas fa-eye"></i> ${p.views || 0} views | <i class="fas fa-images"></i> ${imageCount} images</small></div>
+                        <div class="product-actions">
+                            <button class="btn-edit" onclick="openEditModal(${p.id})"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn-delete" onclick="openDeleteModal(${p.id})"><i class="fas fa-trash"></i> Delete</button>
+                        </div>
+                    </div>
+                </div>`; 
+            }).join('');
+        }
+        
+        function escapeHtml(str) { 
+            if (!str) return ''; 
+            return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); 
+        }
+        
+        function searchProducts() { renderProducts(); }
+        function filterProducts() { renderProducts(); }
+        
+        function previewImages(input) { 
+            const preview = document.getElementById('imagePreview'); 
+            preview.innerHTML = ''; 
+            selectedFiles = Array.from(input.files); 
+            if(selectedFiles.length > 7) { 
+                showToast('Maximum 7 images allowed', true); 
+                selectedFiles = selectedFiles.slice(0,7); 
+                input.files = selectedFiles;
+            } 
+            document.getElementById('imageCounter').innerText = `${selectedFiles.length}/7 images selected`;
+            
+            selectedFiles.forEach((file, index) => { 
+                const reader = new FileReader(); 
+                reader.onload = e => { 
+                    const wrapper = document.createElement('div');
+                    wrapper.style.position = 'relative';
+                    wrapper.style.display = 'inline-block';
+                    
+                    const img = document.createElement('img'); 
+                    img.src = e.target.result; 
+                    img.className = 'preview-img'; 
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.innerHTML = '×';
+                    removeBtn.style.position = 'absolute';
+                    removeBtn.style.top = '-5px';
+                    removeBtn.style.right = '-5px';
+                    removeBtn.style.background = '#dc2626';
+                    removeBtn.style.color = 'white';
+                    removeBtn.style.border = 'none';
+                    removeBtn.style.borderRadius = '50%';
+                    removeBtn.style.width = '20px';
+                    removeBtn.style.height = '20px';
+                    removeBtn.style.cursor = 'pointer';
+                    removeBtn.style.fontSize = '12px';
+                    removeBtn.onclick = () => removeImage(index);
+                    
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(removeBtn);
+                    preview.appendChild(wrapper); 
+                }; 
+                reader.readAsDataURL(file); 
+            }); 
+        }
+        
+        function removeImage(index) {
+            selectedFiles.splice(index, 1);
+            const input = document.getElementById('prodImages');
+            const dt = new DataTransfer();
+            selectedFiles.forEach(file => dt.items.add(file));
+            input.files = dt.files;
+            previewImages(input);
+            showToast('Image removed', false);
+        }
+        
+        async function submitAddProduct(e) { 
+            e.preventDefault(); 
+            const title = document.getElementById('prodTitle').value.trim(); 
+            const category = document.getElementById('prodCategory').value; 
+            const price = parseFloat(document.getElementById('prodPrice').value); 
+            const location = document.getElementById('prodLocation').value.trim(); 
+            const description = document.getElementById('prodDescription').value.trim(); 
+            if(!title||!category||!price||!location||!description) { 
+                showToast('Please fill all fields', true); 
+                return; 
+            } 
+            if(selectedFiles.length === 0) { 
+                showToast('Please upload at least 1 image (up to 7)', true); 
+                return; 
+            } 
+            
+            showToast('Uploading product...', false);
+            
+            const formData = new FormData(); 
+            formData.append('title', title); 
+            formData.append('category', category); 
+            formData.append('price', price); 
+            formData.append('location', location); 
+            formData.append('description', description); 
+            for(let i = 0; i < selectedFiles.length; i++) formData.append('images', selectedFiles[i]); 
+            
+            try { 
+                const response = await fetch(API_BASE + '/products', { 
+                    method:'POST', 
+                    headers:{'Authorization':'Bearer '+authToken}, 
+                    body:formData 
+                }); 
+                const result = await response.json(); 
+                if(result.success) { 
+                    showToast(`Product added successfully with ${selectedFiles.length} images!`); 
+                    closeAddModal(); 
+                    resetAddForm(); 
+                    loadSellerProducts(); 
+                } else { 
+                    showToast(result.error || 'Failed to add product', true); 
+                } 
+            } catch(error) { 
+                console.error('Upload error:', error);
+                showToast('Failed to add product. Check server connection.', true); 
+            } 
+        }
+        
+        function resetAddForm() { 
+            document.getElementById('addForm').reset(); 
+            document.getElementById('imagePreview').innerHTML = ''; 
+            document.getElementById('imageCounter').innerText = '0/7 images selected';
+            selectedFiles = []; 
+            document.getElementById('prodImages').value = '';
+        }
+        
+        function openEditModal(id) { 
+            const product = products.find(p=>p.id===id); 
+            if(!product) return; 
+            editId=id; 
+            document.getElementById('editId').value=product.id; 
+            document.getElementById('editTitle').value=product.title; 
+            document.getElementById('editDescription').value=product.description; 
+            document.getElementById('editPrice').value=product.price; 
+            document.getElementById('editLocation').value=product.location; 
+            document.getElementById('editStatus').value=product.status; 
+            document.getElementById('editModal').style.display='flex'; 
+        }
+        
+        async function submitEdit(e) { 
+            e.preventDefault(); 
+            const updates = { 
+                title:document.getElementById('editTitle').value, 
+                description:document.getElementById('editDescription').value, 
+                price:parseFloat(document.getElementById('editPrice').value), 
+                location:document.getElementById('editLocation').value, 
+                status:document.getElementById('editStatus').value 
+            }; 
+            try { 
+                const response = await fetch(API_BASE+'/products/'+editId, { 
+                    method:'PUT', 
+                    headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken}, 
+                    body:JSON.stringify(updates) 
+                }); 
+                if(response.ok) { 
+                    showToast('Product updated successfully!'); 
+                    closeEditModal(); 
+                    loadSellerProducts(); 
+                } else { 
+                    showToast('Failed to update product', true); 
+                } 
+            } catch(error) { 
+                showToast('Failed', true); 
+            } 
+        }
+        
+        function openDeleteModal(id) { 
+            deleteId=id; 
+            document.getElementById('deleteModal').style.display='flex'; 
+        }
+        
+        function closeDeleteModal() { 
+            document.getElementById('deleteModal').style.display='none'; 
+            deleteId=null; 
+        }
+        
+        async function confirmDelete() { 
+            if(deleteId) { 
+                try { 
+                    const response = await fetch(API_BASE+'/products/'+deleteId, { 
+                        method:'DELETE', 
+                        headers:{'Authorization':'Bearer '+authToken} 
+                    }); 
+                    if(response.ok) { 
+                        showToast('Product deleted successfully'); 
+                        closeDeleteModal(); 
+                        loadSellerProducts(); 
+                    } else { 
+                        showToast('Failed to delete product', true); 
+                    } 
+                } catch(error) { 
+                    showToast('Failed', true); 
+                } 
+                deleteId=null; 
+            } 
+        }
+        
+        function openAddModal() { 
+            document.getElementById('addModal').style.display='flex'; 
+        }
+        
+        function closeAddModal() { 
+            document.getElementById('addModal').style.display='none'; 
+            resetAddForm(); 
+        }
+        
+        function closeEditModal() { 
+            document.getElementById('editModal').style.display='none'; 
+            editId=null; 
+        }
+        
+        function logout() { 
+            if(confirm('Are you sure you want to logout?')) { 
+                localStorage.removeItem('Soko exchange_token'); 
+                window.location.replace('index.html'); 
+            } 
+        }
+        
+        function switchMobileTab(tab) {
+            document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+            document.querySelector(`.nav-item[data-tab="${tab}"]`)?.classList.add('active');
+            if(tab === 'home') {
+                window.scrollTo({ top:0, behavior:'smooth' });
+                closeBottomSheet('accountSheet');
+                closeBottomSheet('resourcesSheet');
+                closeBottomSheet('helpSheet');
+            }
+            else if(tab === 'account') openBottomSheet('accountSheet');
+            else if(tab === 'resources') openBottomSheet('resourcesSheet');
+            else if(tab === 'help') openBottomSheet('helpSheet');
+        }
+        
+        document.querySelectorAll('.nav-item').forEach(i=>i.addEventListener('click',()=>switchMobileTab(i.getAttribute('data-tab'))));
+        
+        window.onclick = function(e) { 
+            if(e.target.classList.contains('modal')) e.target.style.display='none';
+        };
+        
+        loadData();
+    </script>
+</body>
+</html>
