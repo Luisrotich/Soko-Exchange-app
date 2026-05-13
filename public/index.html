@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 <!DOCTYPE html>
 <html lang="en">
@@ -422,5 +423,33 @@
             });
         }
     </script>
+=======
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Railway App</title>
+</head>
+<body>
+
+  <h1>🚀 Railway Deployment Test</h1>
+  <button onclick="getMessage()">Get Message</button>
+
+  <p id="output"></p>
+
+  <script>
+    async function getMessage() {
+      try {
+        // 🔥 IMPORTANT: NO localhost here
+        const res = await fetch("/api/message");
+        const data = await res.json();
+
+        document.getElementById("output").innerText = data.message;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  </script>
+
+>>>>>>> 574c19b4d54cfccd4754e241aa87b629901b64e5
 </body>
 </html>

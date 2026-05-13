@@ -20,5 +20,15 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
-  }
+  },
+  "keywords": [
+    "marketplace",
+    "ecommerce",
+    "mpesa",
+    "farming",
+    "kenya",
+    "pwa"
+  ],
+  "author": "Soko Exchange Team",
+  "license": "MIT"
 }

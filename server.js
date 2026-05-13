@@ -196,7 +196,6 @@ const authenticate = async (req, res, next) => {
 };
 
 async function hasAccessToSellerDetails(buyerId, productId) {
-    // Check if buyer has paid for this product's contact
     return payments.some(p => p.buyer_id === buyerId && p.product_id === productId && p.status === 'completed');
 }
 
@@ -213,12 +212,10 @@ async function processImages(files) {
                 .jpeg({ quality: 80 })
                 .toFile(outputPath);
             
-            // Delete original file
             fs.unlinkSync(file.path);
             imagePaths.push(`/uploads/${filename}`);
         } catch (error) {
             console.error('Error processing image:', error);
-            // Fallback to original file
             imagePaths.push(`/uploads/${file.filename}`);
         }
     }
@@ -349,7 +346,6 @@ app.get('/api/products/:id', async (req, res) => {
     const productIndex = products.findIndex(p => p.id === productId);
     if (productIndex === -1) return res.status(404).json({ error: 'Product not found' });
     
-    // Increment view count
     products[productIndex].views = (products[productIndex].views || 0) + 1;
     writeJSON('products.json', products);
     
@@ -392,7 +388,6 @@ app.post('/api/products', authenticate, upload.array('images', 7), async (req, r
     }
     
     try {
-        // Process and optimize images
         const imagePaths = await processImages(req.files);
         
         const newProduct = {
@@ -472,7 +467,7 @@ app.get('/api/my-products', authenticate, async (req, res) => {
     res.json(sellerProducts);
 });
 
-// Cart Payment - NEW endpoint for cart checkout
+// Cart Payment endpoint
 app.post('/api/cart-pay', authenticate, async (req, res) => {
     const { phoneNumber, items, totalAmount } = req.body;
     const buyerId = req.userId;
@@ -487,7 +482,6 @@ app.post('/api/cart-pay', authenticate, async (req, res) => {
     
     const transactionId = 'TXN' + Date.now() + uuidv4().substr(0, 6);
     
-    // Create order record
     const newOrder = {
         id: getNextId(orders),
         buyer_id: buyerId,
@@ -502,7 +496,6 @@ app.post('/api/cart-pay', authenticate, async (req, res) => {
     orders.push(newOrder);
     writeJSON('orders.json', orders);
     
-    // Create payment records for each product (for contact unlock)
     for (const item of items) {
         const product = products.find(p => p.id === item.productId);
         if (product) {
@@ -534,7 +527,7 @@ app.post('/api/cart-pay', authenticate, async (req, res) => {
     });
 });
 
-// Single product payment (for backward compatibility)
+// Single product payment
 app.post('/api/pay', authenticate, async (req, res) => {
     const { phoneNumber, productId } = req.body;
     const buyerId = req.userId;
@@ -654,7 +647,6 @@ app.put('/api/admin/users/:id/toggle', authenticate, async (req, res) => {
 
 // ==================== SERVE HTML FILES ====================
 
-// Service Worker and PWA files
 app.get('/service-worker.js', (req, res) => {
     res.setHeader('Content-Type', 'application/javascript');
     res.setHeader('Cache-Control', 'no-cache');
@@ -670,7 +662,6 @@ app.get('/favicon.png', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'favicon.png'));
 });
 
-// Serve HTML pages
 app.get('/buyer', (req, res) => res.sendFile(path.join(__dirname, 'public', 'buyer.html')));
 app.get('/seller', (req, res) => res.sendFile(path.join(__dirname, 'public', 'seller.html')));
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
