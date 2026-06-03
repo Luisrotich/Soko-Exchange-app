@@ -36,7 +36,7 @@
     "phone": "254745972345",
     "password": "$2a$10$u1aWe.IMoXKieG.JpXt6gOxyP8YxvjHMn2BjzE5JQuH5R3.0ZZ86C",
     "role": "buyer",
-    "is_active": true,
+    "is_active": false,
     "created_at": "2026-04-24T18:56:52.694Z"
   },
   {
@@ -46,7 +46,7 @@
     "phone": "254745972390",
     "password": "$2a$10$EWQ6c/yYT8ZnNuYi4f9uc.tsFqhGt.W7OBpwGkxryVrFL6ZumOUre",
     "role": "seller",
-    "is_active": true,
+    "is_active": false,
     "created_at": "2026-04-24T19:09:33.157Z"
   },
   {
@@ -56,7 +56,7 @@
     "phone": "254745972100",
     "password": "$2a$10$lG4r2D6ae3kNy2XHajaVj.cDuiLhdc463wAAHcAaSOSE.L3lFHiiW",
     "role": "buyer",
-    "is_active": true,
+    "is_active": false,
     "created_at": "2026-04-28T21:39:14.078Z"
   },
   {
@@ -66,7 +66,7 @@
     "phone": "254745972346",
     "password": "$2a$10$oSU45/MF2y9OymMn37kg9.aJrzSIhE7biBirJRc7dLPQyxvCoPreq",
     "role": "buyer",
-    "is_active": true,
+    "is_active": false,
     "created_at": "2026-05-06T18:31:03.625Z"
   },
   {
@@ -76,7 +76,7 @@
     "phone": "254745972320",
     "password": "$2a$10$ABPNQoeRo4MmQJEzBSBtKO0dWUpW6iPrvXXTyCoZKTgu0LuuP4NHm",
     "role": "seller",
-    "is_active": true,
+    "is_active": false,
     "created_at": "2026-05-06T18:37:20.704Z"
   },
   {
@@ -86,7 +86,7 @@
     "phone": "254745912345",
     "password": "$2a$10$zPILw1mpS9GNjEbM57v2b.DuLJs429xlivpwYDSW39YgYZA/thcmO",
     "role": "buyer",
-    "is_active": true,
+    "is_active": false,
     "created_at": "2026-05-12T11:34:17.154Z"
   },
   {
@@ -96,7 +96,7 @@
     "phone": "254745909870",
     "password": "$2a$10$MNDPW9xgBiYiYERZACiLReQc4aive3gUhbhTrROprTGEqEg7Chy/G",
     "role": "seller",
-    "is_active": true,
+    "is_active": false,
     "created_at": "2026-05-12T11:35:27.651Z"
   },
   {
@@ -106,7 +106,7 @@
     "phone": "254745971000",
     "password": "$2a$10$bU3mtjOoh/O.AQzp9gptIOwp0bJv1HSO44ZBVAnNRNakRolkB2SAG",
     "role": "buyer",
-    "is_active": true,
+    "is_active": false,
     "created_at": "2026-05-12T17:28:58.841Z"
   }
 ]

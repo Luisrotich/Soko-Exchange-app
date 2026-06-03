@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "checkout_request_id": "SOKO1780317776885gh2dvf",
+    "phone_number": "254711223344",
+    "amount": 987,
+    "order_id": 22,
+    "status": "pending",
+    "result_code": null,
+    "result_desc": null,
+    "mpesa_receipt": null,
+    "created_at": "2026-06-01T12:42:56.889Z",
+    "updated_at": "2026-06-01T12:42:56.889Z"
+  },
+  {
+    "id": 2,
+    "checkout_request_id": "SOKO1780317804600v41fsf",
+    "phone_number": "254745972350",
+    "amount": 987,
+    "order_id": 23,
+    "status": "pending",
+    "result_code": null,
+    "result_desc": null,
+    "mpesa_receipt": null,
+    "created_at": "2026-06-01T12:43:24.603Z",
+    "updated_at": "2026-06-01T12:43:24.603Z"
+  },
+  {
+    "id": 3,
+    "checkout_request_id": "SOKO1780317851941vdqo9m",
+    "phone_number": "254745972350",
+    "amount": 987,
+    "order_id": 24,
+    "status": "pending",
+    "result_code": null,
+    "result_desc": null,
+    "mpesa_receipt": null,
+    "created_at": "2026-06-01T12:44:11.942Z",
+    "updated_at": "2026-06-01T12:44:11.942Z"
+  },
+  {
+    "id": 4,
+    "checkout_request_id": "SOKO17804938190620he9a4",
+    "phone_number": "254745972350",
+    "amount": 9000,
+    "order_id": 25,
+    "status": "pending",
+    "result_code": null,
+    "result_desc": null,
+    "mpesa_receipt": null,
+    "created_at": "2026-06-03T13:36:59.066Z",
+    "updated_at": "2026-06-03T13:36:59.066Z"
+  }
+]
