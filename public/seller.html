@@ -687,7 +687,7 @@
         function getImageUrl(imagePath) { 
             if(!imagePath) return 'https://placehold.co/300x200/2e7d32/white?text=No+Image'; 
             if(imagePath.startsWith('http')) return imagePath; 
-            if(imagePath.startsWith('/uploads/')) return 'http://localhost:3000'+imagePath; 
+            if(imagePath.startsWith('/uploads/')) return imagePath; 
             return 'https://placehold.co/300x200/2e7d32/white?text=Product'; 
         }
         
