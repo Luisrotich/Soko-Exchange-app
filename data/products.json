@@ -10,7 +10,7 @@
     "quantity": 3,
     "images": "[\"/uploads/4338d30e-71d3-4690-a7e4-c8bf96dc35c0.jpg\"]",
     "status": "active",
-    "views": 0,
+    "views": 1,
     "created_at": "2026-06-03T07:51:38.297Z",
     "updated_at": "2026-06-03T07:51:38.297Z"
   },
@@ -22,12 +22,12 @@
     "category": "food",
     "price": 9000,
     "location": "juja",
-    "quantity": 7,
+    "quantity": 6,
     "images": "[\"/uploads/39040e7c-efa6-45ed-a720-ad860120e457.jpg\"]",
     "status": "active",
-    "views": 0,
+    "views": 6,
     "created_at": "2026-06-03T07:55:32.401Z",
-    "updated_at": "2026-06-03T07:55:32.401Z"
+    "updated_at": "2026-06-13T14:45:22.241Z"
   },
   {
     "id": 15,
@@ -40,7 +40,7 @@
     "quantity": 8,
     "images": "[\"/uploads/5c5b7735-c1d2-4dd1-9469-44b0839d5f36.jpg\"]",
     "status": "active",
-    "views": 0,
+    "views": 1,
     "created_at": "2026-06-03T07:56:39.869Z",
     "updated_at": "2026-06-03T07:56:39.869Z"
   },
@@ -55,8 +55,23 @@
     "quantity": 18,
     "images": "[\"/uploads/093717ce-0cec-49d6-a625-0838a5aa94d6.jpg\"]",
     "status": "active",
-    "views": 0,
+    "views": 1,
     "created_at": "2026-06-03T07:57:41.617Z",
     "updated_at": "2026-06-03T07:57:41.617Z"
+  },
+  {
+    "id": 17,
+    "seller_id": 2,
+    "title": "5678hnm,",
+    "description": "ertyuio",
+    "category": "farming",
+    "price": 33,
+    "location": "rtyuiolkjh",
+    "quantity": 3,
+    "images": "[\"/uploads/8a7dd077-d8f0-4db8-bdb8-3bf15ef2811b.jpg\",\"/uploads/3ca8d341-1e30-4343-a874-35419a4a3880.jpg\",\"/uploads/5ec5121e-6cfc-46cd-a4e2-2a7b416ec8b6.jpg\",\"/uploads/90c2bcdf-8774-4c56-bcf8-5898cd91053a.jpg\",\"/uploads/3911eee2-5296-4483-9acb-26f4faac4f39.jpg\"]",
+    "status": "active",
+    "views": 1,
+    "created_at": "2026-06-13T14:45:55.109Z",
+    "updated_at": "2026-06-13T14:45:55.109Z"
   }
 ]

@@ -1147,12 +1147,7 @@
                         <div><i class="fas fa-tag"></i> <strong>Category:</strong> ${product.category}</div>
                         <div><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> ${escapeHtml(product.location)}</div>
                         <div class="product-description"><strong>Description:</strong><p>${escapeHtml(product.description)}</p></div>
-                        <div class="seller-info">
-                            <h4><i class="fas fa-store"></i> Seller Information</h4>
-                            <p><i class="fas fa-user"></i> ${escapeHtml(product.seller_name)}</p>
-                            <p><i class="fas fa-phone"></i> ${product.seller_phone || 'Not provided'}</p>
-                            <p><i class="fas fa-envelope"></i> ${escapeHtml(product.seller_email)}</p>
-                        </div>
+                       
                         <button class="buy-now-btn" onclick="addToCartAndCheckout(${JSON.stringify(product).replace(/"/g, '&quot;')})">
                             <i class="fas fa-bolt"></i> Buy Now
                         </button>
