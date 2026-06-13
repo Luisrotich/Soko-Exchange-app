@@ -21,7 +21,7 @@ const MPESA_CONSUMER_SECRET = process.env.MPESA_CONSUMER_SECRET || 'YOUR_CONSUME
 const MPESA_PASSKEY = process.env.MPESA_PASSKEY || 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
 const MPESA_SHORTCODE = process.env.MPESA_SHORTCODE || '174379';
 const MPESA_ENVIRONMENT = process.env.MPESA_ENVIRONMENT || 'sandbox'; // sandbox or production
-const MPESA_CALLBACK_URL = process.env.MPESA_CALLBACK_URL || 'https://your-domain.com/api/mpesa-callback';
+const MPESA_CALLBACK_URL = process.env.MPESA_CALLBACK_URL || 'https://soko-exchange-app-2.onrender.com//api/mpesa-callback';
 
 // Middleware
 app.use(cors());
